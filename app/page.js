@@ -1,66 +1,75 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import ProductGrid from "@/components/products/ProductGrid";
+import EditorialBanner from "@/components/home/EditorialBanner";
+import HomeCategories from "@/components/home/HomeCategories";
+import Newsletter from "@/components/home/Newsletter";
+import { getPublicCategories } from "@/modules/categories/category.service";
 
-export default function Home() {
+import {
+  getBestSellerProducts,
+  getNewProducts,
+} from "@/modules/products/product.service";
+
+export default async function Home() {
+  const bestSellers = await getBestSellerProducts();
+  const newProducts = await getNewProducts();
+  const categorias = await getPublicCategories();
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <Header />
+
+      <main>
+        <section className="homeHero">
+          <div className="container homeHeroGrid">
+            <div className="homeHeroText">
+              <span className="kicker">Boutique íntima premium</span>
+
+              <h1>Desejo, cuidado e discrição em uma experiência sofisticada.</h1>
+
+              <p>
+                Produtos selecionados para quem valoriza privacidade, estética
+                e uma compra elegante do início ao fim.
+              </p>
+
+              <div className="heroButtons">
+                <a href="/catalogo" className="btn">
+                  Explorar coleção
+                </a>
+
+                <a href="/catalogo?categoria=novidades" className="btn btnGhost">
+                  Ver novidades
+                </a>
+              </div>
+            </div>
+
+            <div className="homeHeroVisual">
+              <span>Curadoria Premium</span>
+              <h2>Intimidade tratada com elegância.</h2>
+            </div>
+          </div>
+        </section>
+
+        <ProductGrid
+          title="Mais comprados"
+          subtitle="Favoritos escolhidos por clientes que valorizam discrição, qualidade e experiência."
+          products={bestSellers}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        <EditorialBanner />
+
+        <ProductGrid
+          title="Novidades"
+          subtitle="Novas escolhas para transformar o cuidado íntimo em um ritual mais sofisticado."
+          products={newProducts}
+        />
+
+        <HomeCategories categorias={categorias} />
+
+        <Newsletter />
       </main>
-    </div>
+
+      <Footer />
+    </>
   );
 }
