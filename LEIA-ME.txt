@@ -1,0 +1,46 @@
+ATUALIZAÇÃO DA CONTA — VIRELLA SEXSHOP
+
+Esta atualização mantém a logo, as categorias e todo o restante do cabeçalho atual.
+
+1) Copie a pasta "components" deste pacote para a raiz do seu projeto.
+   Confirme a substituição de AccountClient.js.
+
+   Os quatro arquivos ficarão em:
+   components/account/HeaderAccount.js
+   components/account/HeaderAccount.module.css
+   components/account/AccountClient.js
+   components/account/AccountClient.module.css
+
+2) Abra o arquivo que contém o visual do cabeçalho.
+
+   Na versão nova do projeto, normalmente é:
+   components/layout/HeaderClient.js
+
+   Se esse arquivo não existir, use:
+   components/layout/Header.js
+
+3) Junto com os imports no início do arquivo, adicione:
+
+   import HeaderAccount from "@/components/account/HeaderAccount";
+
+4) Nesse mesmo arquivo, procure o bloco que mostra "Entrar" e o link /login.
+   Apague somente aquele <Link> inteiro e coloque no lugar:
+
+   <HeaderAccount />
+
+Não substitua o arquivo completo do cabeçalho. Assim suas categorias dinâmicas,
+sua logo e as demais alterações continuam exatamente como estão.
+
+5) Salve, teste localmente e envie:
+
+   npm run dev
+
+   git add .
+   git commit -m "Melhora area da conta e mostra usuario no cabecalho"
+   git push
+
+RESULTADO
+- Deslogado: aparece "Entrar".
+- Logado: aparece um ponto verde, "Olá, Nome" e "Minha conta".
+- A página Minha conta mostra nome, e-mail, confirmação, cadastro e último acesso.
+- O cliente pode alterar o nome e sair da conta.

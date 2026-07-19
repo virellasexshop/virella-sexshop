@@ -1,5 +1,5 @@
 "use client";
-
+import HeaderAccount from "@/components/account/HeaderAccount";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -177,16 +177,7 @@ export default function HeaderClient({ categorias = [], promotionSettings = {} }
           <div className="headerActions">
             <SearchBar />
 
-            <Link
-              href="/login"
-              className={
-                linkAtivo("/login")
-                  ? "headerLink active"
-                  : "headerLink"
-              }
-            >
-              Entrar
-            </Link>
+           <HeaderAccount />
 
             <Link
               href="/carrinho"
