@@ -1,7 +1,11 @@
 import Link from "next/link";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { countOrders } from "@/modules/orders/order.service";
 
-export default function AdminPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminPage() {
+  const orderCount = await countOrders();
   return (
     <main className="adminShell">
       <AdminSidebar />
@@ -27,7 +31,7 @@ export default function AdminPage() {
 
           <div className="adminCard">
             <span>Pedidos</span>
-            <strong>0</strong>
+            <strong>{orderCount}</strong>
             <p>Pedidos recebidos até agora.</p>
           </div>
 
@@ -46,6 +50,7 @@ export default function AdminPage() {
             <Link href="/admin/produtos/importar">Importar vários produtos por planilha</Link>
             <Link href="/admin/produtos">Organizar produtos por categoria</Link>
             <Link href="/admin/categorias">Gerenciar categorias</Link>
+            <Link href="/admin/pedidos">Ver pedidos e pagamentos</Link>
           </div>
         </div>
       </section>

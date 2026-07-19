@@ -16,6 +16,7 @@ export default function AdminSidebar() {
         <Link href="/admin/produtos/importar">Importar planilha</Link>
         <Link href="/admin/categorias">Categorias</Link>
         <Link href="/admin/promocoes">Promoções</Link>
+        <Link href="/admin/pedidos">Pedidos</Link>
       </nav>
 
       <Link href="/" className="adminStoreLink">

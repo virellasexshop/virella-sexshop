@@ -1,0 +1,7 @@
+.card { min-height: 65vh; padding: 110px 0; }
+.card > span { color: #c9aa89; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.card h1 { max-width: 850px; margin: 18px 0 24px; font-size: clamp(58px,8vw,110px); line-height: .92; letter-spacing: -.065em; font-weight: 430; }
+.card p { max-width: 650px; color: #a59d96; font-size: 17px; line-height: 1.75; }
+.card div { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.card a { padding: 15px 20px; border: 1px solid rgba(255,255,255,.12); color: #ddd5cf; }
+.card a:first-child { border-color: #eee8e2; background: #eee8e2; color: #090909; }

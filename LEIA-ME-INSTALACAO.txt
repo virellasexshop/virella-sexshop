@@ -1,0 +1,73 @@
+INTEGRAÇÃO MERCADO PAGO — VIRELLA SEXSHOP
+
+IMPORTANTE
+Comece com credenciais de TESTE. Não envie Access Token por mensagem e nunca
+coloque essa chave em um arquivo do projeto ou no GitHub.
+
+1. ARQUIVOS
+Copie todas as pastas deste pacote para a raiz do projeto e confirme a mesclagem.
+Os arquivos mantêm os mesmos diretórios corretos. Não apague as outras pastas.
+
+2. BANCO DE DADOS
+No Supabase, abra SQL Editor > New query.
+Copie todo o conteúdo de supabase/pagamentos.sql e clique em Run.
+Ele cria pedidos, itens, histórico, segurança e baixa de estoque idempotente.
+
+3. MERCADO PAGO
+Acesse Mercado Pago Developers > Suas integrações e crie uma aplicação de
+Checkout Pro. Comece pelas credenciais de teste.
+
+4. VARIÁVEIS NA VERCEL
+Vercel > projeto > Settings > Environment Variables:
+
+MERCADO_PAGO_ACCESS_TOKEN = Access Token de teste (depois, o de produção)
+NEXT_PUBLIC_SITE_URL = https://SEU-DOMINIO.com.br
+VIRELLA_FRETE_FIXO = 15.00
+VIRELLA_FRETE_GRATIS_ACIMA = 250.00
+
+Os dois valores de frete são exemplos. Se VIRELLA_FRETE_FIXO não for cadastrado,
+o sistema considera frete grátis (R$ 0,00).
+
+Marque Production, Preview e Development quando a Vercel perguntar o ambiente.
+Depois faça um novo deploy.
+
+5. WEBHOOK
+Após o primeiro deploy, no painel da aplicação do Mercado Pago vá em:
+Webhooks > Configurar notificações.
+
+URL de produção:
+https://SEU-DOMINIO.com.br/api/mercadopago/webhook
+
+Selecione o evento Pagamentos e salve. O Mercado Pago exibirá uma assinatura
+secreta. Cadastre na Vercel:
+
+MERCADO_PAGO_WEBHOOK_SECRET = assinatura secreta do webhook
+
+Faça outro deploy para aplicar a nova variável.
+
+6. TESTE
+- Crie/acesse uma conta de comprador de teste no Mercado Pago.
+- Adicione um produto com estoque maior que zero ao carrinho.
+- Preencha o checkout e pague com os dados de teste do Mercado Pago.
+- Confira o pedido em /admin/pedidos.
+- Confira o histórico em /minha-conta quando a compra for feita logado.
+
+7. ENVIAR PARA A VERCEL PELO GIT
+git add .
+git commit -m "Integra pagamentos e pedidos com Mercado Pago"
+git push
+
+O QUE FOI ADICIONADO
+- Checkout bonito com contato, endereço, resumo e frete configurável.
+- Preços e promoções recalculados no servidor.
+- Checkout Pro do Mercado Pago.
+- Webhook com validação de assinatura.
+- Pedidos e itens armazenados no Supabase.
+- Baixa de estoque somente uma vez após pagamento aprovado.
+- Retornos de sucesso, pendência e falha.
+- Histórico em Minha conta.
+- Gestão de pedidos e andamento de entrega no painel administrativo.
+
+OBSERVAÇÃO
+O histórico é associado à conta quando o cliente estiver logado durante a compra.
+Compras como visitante continuam aparecendo normalmente no painel administrativo.

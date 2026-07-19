@@ -1,0 +1,19 @@
+.counter { color: #9a928b; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.list { display: grid; gap: 16px; }
+.card { border: 1px solid rgba(255,255,255,.09); background: #11100f; }
+.card header { display: grid; grid-template-columns: .5fr 1.2fr .75fr .7fr; gap: 18px; padding: 22px 25px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.card header > div { display: grid; align-content: start; gap: 5px; }
+.card header span, .body h3, .body label { color: #7f7872; font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }
+.card header strong { color: #e9e2dc; font-size: 13px; font-weight: 520; overflow-wrap: anywhere; }
+.card header small { color: #817a74; font-size: 10px; overflow-wrap: anywhere; }
+.card header .approved { color: #91bd97; }
+.body { display: grid; grid-template-columns: 1fr 1.1fr .75fr; gap: 25px; padding: 25px; }
+.body h3 { margin: 0 0 12px; }
+.body ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; color: #bbb2aa; font-size: 12px; }
+.body p { margin: 0; color: #9c948d; font-size: 12px; line-height: 1.7; }
+.body form { display: grid; gap: 10px; align-content: start; }
+.body form label { display: grid; gap: 8px; }
+.body select { width: 100%; height: 42px; padding: 0 10px; border: 1px solid rgba(255,255,255,.1); background: #090909; color: #e5ddd7; }
+.body button { height: 40px; border: 0; background: #eee8e2; color: #090909; cursor: pointer; }
+@media (max-width: 900px) { .card header { grid-template-columns: 1fr 1fr; } .body { grid-template-columns: 1fr; } }
+@media (max-width: 540px) { .card header { grid-template-columns: 1fr; } }

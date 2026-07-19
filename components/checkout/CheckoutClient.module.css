@@ -1,0 +1,43 @@
+.page { padding: 82px 0 120px; }
+.heading { max-width: 720px; margin-bottom: 52px; }
+.heading h1 { margin: 15px 0 18px; font-size: clamp(56px, 7vw, 96px); line-height: .94; letter-spacing: -.06em; font-weight: 430; }
+.heading p { color: #9f9790; font-size: 16px; line-height: 1.7; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 24px; align-items: start; }
+.formColumn { display: grid; gap: 18px; }
+.formCard, .summary, .stateCard { border: 1px solid rgba(255,255,255,.09); background: #11100f; }
+.formCard { padding: 34px; }
+.cardHeading { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.cardHeading span { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(201,170,137,.3); border-radius: 50%; color: #c9aa89; font-size: 10px; }
+.cardHeading h2 { margin: 0; font-size: 25px; font-weight: 460; }
+.formCard label { display: grid; gap: 9px; color: #978f88; font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }
+.formCard > label { margin-top: 18px; }
+.formCard input, .formCard select { width: 100%; height: 52px; padding: 0 14px; border: 1px solid rgba(255,255,255,.11); outline: 0; background: #090909; color: #f4eee8; font: inherit; letter-spacing: normal; text-transform: none; }
+.formCard input:focus, .formCard select:focus { border-color: #b99a7e; box-shadow: 0 0 0 3px rgba(185,154,126,.07); }
+.gridTwo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.gridAddress { display: grid; grid-template-columns: 140px minmax(0,1fr) 120px; gap: 16px; }
+.street { grid-column: span 1; }
+.summary { position: sticky; top: 122px; padding: 28px; }
+.summaryLabel { color: #c1a486; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.items { display: grid; gap: 17px; margin: 24px 0; padding-bottom: 22px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.item { display: grid; grid-template-columns: 52px minmax(0,1fr) auto; gap: 12px; align-items: center; }
+.thumb { display: grid; width: 52px; height: 62px; place-items: center; overflow: hidden; background: #1a1715 center/cover no-repeat; color: #8c7460; font-family: Georgia,serif; }
+.item div:nth-child(2) { display: grid; gap: 5px; }
+.item strong { font-size: 12px; font-weight: 520; line-height: 1.35; }
+.item small { color: #827a74; font-size: 10px; }
+.item > span { color: #d9d1ca; font-size: 11px; white-space: nowrap; }
+.totals { display: grid; gap: 13px; }
+.totals > div { display: flex; justify-content: space-between; gap: 20px; color: #918981; font-size: 12px; }
+.totals strong { color: #e8e1db; font-weight: 500; }
+.totals .total { margin-top: 5px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.08); color: #eee8e2; font-size: 15px; }
+.total strong { font-size: 20px; }
+.summary button, .empty a { width: 100%; margin-top: 25px; padding: 17px; border: 0; background: #eee8e2; color: #090909; font-weight: 650; cursor: pointer; }
+.summary button:disabled { opacity: .55; cursor: wait; }
+.secure { color: #77706a; font-size: 10px; line-height: 1.55; text-align: center; }
+.back { display: block; margin-top: 18px; color: #9a928b; font-size: 11px; text-align: center; }
+.error { padding: 12px; border: 1px solid rgba(190,91,91,.25); background: rgba(190,91,91,.08); color: #e0aaaa; font-size: 12px; line-height: 1.5; }
+.stateCard { margin: 90px 0; padding: 60px; color: #aaa19a; text-align: center; }
+.empty { min-height: 60vh; padding: 100px 0; }
+.empty h1 { max-width: 700px; font-size: clamp(48px,6vw,82px); font-weight: 430; letter-spacing: -.055em; }
+.empty a { display: inline-block; width: auto; }
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; } .summary { position: static; } }
+@media (max-width: 680px) { .page { padding-top: 58px; } .formCard { padding: 24px 18px; } .gridTwo, .gridAddress { grid-template-columns: 1fr; } .street { grid-column: auto; } .summary { padding: 24px 18px; } }
