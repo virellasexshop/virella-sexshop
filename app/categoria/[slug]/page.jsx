@@ -4,6 +4,8 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/products/ProductCard";
 import { getProductsByCategorySlug } from "@/modules/products/product.service";
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoryPage({ params }) {
   const { slug } = await params;
   const { categoria, produtos } = await getProductsByCategorySlug(slug);

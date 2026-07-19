@@ -1,25 +1,17 @@
 import Link from "next/link";
 import { createProductAction } from "../actions";
 import ImageUploader from "@/components/admin/ImageUploader";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import { getAdminCategories } from "@/modules/categories/category.service";
 
-export default function NovoProdutoPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NovoProdutoPage() {
+  const categorias = await getAdminCategories();
+
   return (
     <main className="adminShell">
-      <aside className="adminSidebar">
-        <div className="adminBrand">
-          <span>Virella</span>
-          <strong>Sexshop</strong>
-        </div>
-
-        <nav className="adminNav">
-          <Link href="/admin">Dashboard</Link>
-          <Link href="/admin/produtos">Produtos</Link>
-          <Link href="/admin/categorias">Categorias</Link>
-          <Link href="/admin/pedidos">Pedidos</Link>
-          <Link href="/admin/clientes">Clientes</Link>
-          <Link href="/admin/configuracoes">Configurações</Link>
-        </nav>
-      </aside>
+      <AdminSidebar />
 
       <section className="adminContent">
         <div className="adminTop">
@@ -43,9 +35,28 @@ export default function NovoProdutoPage() {
             </label>
 
             <label>
-              Slug
+              Slug (opcional)
               <input name="slug" placeholder="gel-sensorial-premium" />
             </label>
+
+            <label>
+              Categoria
+              <select name="categoria_id" required defaultValue="">
+                <option value="" disabled>Selecione uma categoria</option>
+                {categorias.map((categoria) => (
+                  <option key={categoria.id} value={categoria.id}>
+                    {categoria.nome}{categoria.ativo === false ? " — inativa" : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {categorias.length === 0 && (
+              <p className="adminFormNotice">
+                Crie uma categoria antes de cadastrar o produto. 
+                <Link href="/admin/categorias">Criar categoria</Link>
+              </p>
+            )}
 
             <label>
               Descrição curta
@@ -65,34 +76,29 @@ export default function NovoProdutoPage() {
 
           <div className="formCard">
             <h2>Preços</h2>
-
             <div className="formGrid">
               <label>
                 Preço
-                <input name="preco" required placeholder="99.90" />
+                <input name="preco" required inputMode="decimal" placeholder="99,90" />
               </label>
-
               <label>
                 Preço promocional
-                <input name="preco_promocional" placeholder="79.90" />
+                <input name="preco_promocional" inputMode="decimal" placeholder="79,90" />
               </label>
             </div>
           </div>
 
           <div className="formCard">
             <h2>Estoque</h2>
-
             <div className="formGrid">
               <label>
                 Quantidade
-                <input name="quantidade" type="number" defaultValue="0" />
+                <input name="quantidade" type="number" min="0" defaultValue="0" />
               </label>
-
               <label>
                 SKU
-                <input name="sku" placeholder="PD-001" />
+                <input name="sku" placeholder="VIR-001" />
               </label>
-
               <label>
                 Código de barras
                 <input name="codigo_barras" />
@@ -102,21 +108,18 @@ export default function NovoProdutoPage() {
 
           <div className="formCard">
             <h2>SEO</h2>
-
             <label>
-              Meta title
+              Título para buscadores
               <input name="meta_title" />
             </label>
-
             <label>
-              Meta description
+              Descrição para buscadores
               <textarea name="meta_description" rows="3" />
             </label>
           </div>
 
           <div className="formCard">
-            <h2>Opções</h2>
-
+            <h2>Exibição</h2>
             <div className="checkboxGrid">
               <label><input type="checkbox" name="ativo" defaultChecked /> Ativo</label>
               <label><input type="checkbox" name="destaque" /> Destaque</label>
@@ -127,11 +130,8 @@ export default function NovoProdutoPage() {
           </div>
 
           <div className="formActions">
-            <Link href="/admin/produtos" className="adminButton secondary">
-              Cancelar
-            </Link>
-
-            <button type="submit" className="adminButton">
+            <Link href="/admin/produtos" className="adminButton secondary">Cancelar</Link>
+            <button type="submit" className="adminButton" disabled={categorias.length === 0}>
               Salvar produto
             </button>
           </div>

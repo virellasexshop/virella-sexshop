@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import {
   createProduct,
   getProductBySlug,
+  updateProduct,
 } from "@/modules/products/product.service";
 import { uploadImageToCloudinary } from "@/services/cloudinary/upload";
+import { requireAdmin } from "@/lib/admin-auth";
 
 function createSlug(text) {
   return String(text || "")
@@ -35,7 +37,13 @@ function toNumber(value) {
 }
 
 export async function createProductAction(formData) {
+  await requireAdmin();
   const nome = formData.get("nome");
+  const categoriaId = formData.get("categoria_id");
+
+  if (!nome || !categoriaId) {
+    throw new Error("Nome e categoria são obrigatórios.");
+  }
 
   // Upload da imagem
   const imagemFile = formData.get("imagem_principal");
@@ -51,6 +59,8 @@ const slug = await createUniqueSlug(slugBase);
  const produto = {
   nome,
   slug,
+
+  categoria_id: categoriaId,
 
   descricao_curta: formData.get("descricao_curta") || null,
   descricao: formData.get("descricao") || null,
@@ -76,6 +86,28 @@ const slug = await createUniqueSlug(slugBase);
 
   await createProduct(produto);
 
+  revalidatePath("/");
+  revalidatePath("/catalogo");
+  revalidatePath("/categoria/[slug]", "page");
   revalidatePath("/admin/produtos");
   redirect("/admin/produtos");
+}
+
+export async function updateProductCategoryAction(formData) {
+  await requireAdmin();
+  const produtoId = formData.get("produto_id");
+  const categoriaId = formData.get("categoria_id");
+
+  if (!produtoId) {
+    throw new Error("Produto não encontrado.");
+  }
+
+  await updateProduct(produtoId, {
+    categoria_id: categoriaId || null,
+  });
+
+  revalidatePath("/");
+  revalidatePath("/catalogo");
+  revalidatePath("/categoria/[slug]", "page");
+  revalidatePath("/admin/produtos");
 }

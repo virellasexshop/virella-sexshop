@@ -1,23 +1,10 @@
 import Link from "next/link";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default function AdminPage() {
   return (
     <main className="adminShell">
-      <aside className="adminSidebar">
-        <div className="adminBrand">
-          <span>Virella</span>
-          <strong>Sexshop</strong>
-        </div>
-
-        <nav className="adminNav">
-          <Link href="/admin">Dashboard</Link>
-          <Link href="/admin/produtos">Produtos</Link>
-          <Link href="/admin/categorias">Categorias</Link>
-          <Link href="/admin/pedidos">Pedidos</Link>
-          <Link href="/admin/clientes">Clientes</Link>
-          <Link href="/admin/configuracoes">Configurações</Link>
-        </nav>
-      </aside>
+      <AdminSidebar />
 
       <section className="adminContent">
         <div className="adminTop">
@@ -33,9 +20,9 @@ export default function AdminPage() {
 
         <div className="adminCards">
           <div className="adminCard">
-            <span>Produtos ativos</span>
-            <strong>4</strong>
-            <p>Produtos disponíveis na loja.</p>
+            <span>Catálogo</span>
+            <strong>Virella</strong>
+            <p>Cadastre e organize os produtos da loja.</p>
           </div>
 
           <div className="adminCard">
@@ -45,19 +32,20 @@ export default function AdminPage() {
           </div>
 
           <div className="adminCard">
-            <span>Receita</span>
-            <strong>R$ 0,00</strong>
-            <p>Total vendido no período.</p>
+            <span>Atalhos</span>
+            <strong>3</strong>
+            <p>Acessos rápidos para administrar a loja.</p>
           </div>
         </div>
 
         <div className="adminPanel">
-          <h2>Próximas ações</h2>
+          <h2>Ações rápidas</h2>
 
           <div className="adminActionList">
-            <Link href="/admin/produtos/novo">Cadastrar primeiro produto real</Link>
-            <Link href="/admin/categorias">Organizar categorias</Link>
-            <Link href="/admin/pedidos">Configurar pedidos</Link>
+            <Link href="/admin/produtos/novo">Cadastrar novo produto</Link>
+            <Link href="/admin/produtos/importar">Importar vários produtos por planilha</Link>
+            <Link href="/admin/produtos">Organizar produtos por categoria</Link>
+            <Link href="/admin/categorias">Gerenciar categorias</Link>
           </div>
         </div>
       </section>

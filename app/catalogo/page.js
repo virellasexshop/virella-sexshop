@@ -1,7 +1,7 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CatalogClient from "@/components/catalog/CatalogClient";
-import { getAdminProducts } from "@/modules/products/product.service";
+import { getCatalogProducts } from "@/modules/products/product.service";
 import { getPublicCategories } from "@/modules/categories/category.service";
 
 export const metadata = {
@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function CatalogoPage() {
   const [products, categories] = await Promise.all([
-    getAdminProducts(),
+    getCatalogProducts(),
     getPublicCategories(),
   ]);
 

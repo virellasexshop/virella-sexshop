@@ -5,7 +5,35 @@ import { getCart, saveCart } from "@/lib/carrinho";
 const money = (value) => Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 export default function CartClient() {
   const [items, setItems] = useState([]);
-  useEffect(() => { const timer = window.setTimeout(() => setItems(getCart()), 0); return () => window.clearTimeout(timer); }, []);
+  useEffect(() => {
+    let active = true;
+    const timer = window.setTimeout(() => {
+      const current = getCart();
+      setItems(current);
+
+      if (current.length) {
+        fetch("/api/produtos/precos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: current.map((item) => item.id) }),
+        })
+          .then((response) => response.json())
+          .then(({ products = [] }) => {
+            if (!active) return;
+            const priceMap = new Map(products.map((product) => [product.id, product]));
+            const updated = current.map((item) => ({ ...item, ...(priceMap.get(item.id) || {}) }));
+            setItems(updated);
+            saveCart(updated);
+          })
+          .catch(() => {});
+      }
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, []);
   function update(next) { setItems(next); saveCart(next); }
   function quantity(id, delta) { update(items.map((item) => item.id === id ? { ...item, quantidade: Math.max(1, item.quantidade + delta) } : item)); }
   function remove(id) { update(items.filter((item) => item.id !== id)); }

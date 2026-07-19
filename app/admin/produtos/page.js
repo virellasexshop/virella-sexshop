@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { getAdminProducts } from "@/modules/products/product.service";
+import { getAdminCategories } from "@/modules/categories/category.service";
+import { updateProductCategoryAction } from "./actions";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+
+export const dynamic = "force-dynamic";
 
 function formatPrice(value) {
   return Number(value || 0).toLocaleString("pt-BR", {
@@ -9,25 +14,14 @@ function formatPrice(value) {
 }
 
 export default async function AdminProdutosPage() {
-  const produtos = await getAdminProducts();
+  const [produtos, categorias] = await Promise.all([
+    getAdminProducts(),
+    getAdminCategories(),
+  ]);
 
   return (
     <main className="adminShell">
-      <aside className="adminSidebar">
-        <div className="adminBrand">
-          <span>Virella</span>
-          <strong>Sexshop</strong>
-        </div>
-
-        <nav className="adminNav">
-          <Link href="/admin">Dashboard</Link>
-          <Link href="/admin/produtos">Produtos</Link>
-          <Link href="/admin/categorias">Categorias</Link>
-          <Link href="/admin/pedidos">Pedidos</Link>
-          <Link href="/admin/clientes">Clientes</Link>
-          <Link href="/admin/configuracoes">Configurações</Link>
-        </nav>
-      </aside>
+      <AdminSidebar />
 
       <section className="adminContent">
         <div className="adminTop">
@@ -36,9 +30,14 @@ export default async function AdminProdutosPage() {
             <h1>Produtos</h1>
           </div>
 
-          <Link href="/admin/produtos/novo" className="adminButton">
-            Novo produto
-          </Link>
+          <div className="adminTopActions">
+            <Link href="/admin/produtos/importar" className="adminButton secondary">
+              Importar planilha
+            </Link>
+            <Link href="/admin/produtos/novo" className="adminButton">
+              Novo produto
+            </Link>
+          </div>
         </div>
 
         <div className="adminTableCard">
@@ -46,6 +45,7 @@ export default async function AdminProdutosPage() {
             <thead>
               <tr>
                 <th>Produto</th>
+                <th>Categoria</th>
                 <th>Preço</th>
                 <th>Estoque</th>
                 <th>Status</th>
@@ -59,14 +59,9 @@ export default async function AdminProdutosPage() {
                   <td>
                     <div className="adminProductCell">
                       {produto.imagem_principal ? (
-                        <img
-                          src={produto.imagem_principal}
-                          alt={produto.nome}
-                        />
+                        <img src={produto.imagem_principal} alt={produto.nome} />
                       ) : (
-                        <div className="adminProductPlaceholder">
-                          Sem foto
-                        </div>
+                        <div className="adminProductPlaceholder">Sem foto</div>
                       )}
 
                       <div>
@@ -77,19 +72,40 @@ export default async function AdminProdutosPage() {
                   </td>
 
                   <td>
-                    {formatPrice(
-                      produto.preco_promocional || produto.preco
-                    )}
+                    <form
+                      action={updateProductCategoryAction}
+                      className="adminCategoryForm"
+                    >
+                      <input type="hidden" name="produto_id" value={produto.id} />
+
+                      <select
+                        name="categoria_id"
+                        defaultValue={produto.categoria_id || ""}
+                        aria-label={`Categoria de ${produto.nome}`}
+                      >
+                        <option value="">Sem categoria</option>
+                        {categorias.map((categoria) => (
+                          <option key={categoria.id} value={categoria.id}>
+                            {categoria.nome}
+                            {categoria.ativo === false ? " — inativa" : ""}
+                          </option>
+                        ))}
+                      </select>
+
+                      <button type="submit">Salvar</button>
+                    </form>
                   </td>
 
+                  <td>
+                    <strong>{formatPrice(produto.preco)}</strong>
+                    {produto.promocao && produto.preco_promocional && (
+                      <span>Promo: {formatPrice(produto.preco_promocional)}</span>
+                    )}
+                  </td>
                   <td>{produto.quantidade}</td>
 
                   <td>
-                    <span
-                      className={
-                        produto.ativo ? "status active" : "status"
-                      }
-                    >
+                    <span className={produto.ativo ? "status active" : "status"}>
                       {produto.ativo ? "Ativo" : "Inativo"}
                     </span>
                   </td>
@@ -107,7 +123,7 @@ export default async function AdminProdutosPage() {
 
               {produtos.length === 0 && (
                 <tr>
-                  <td colSpan="5">Nenhum produto cadastrado.</td>
+                  <td colSpan="6">Nenhum produto cadastrado.</td>
                 </tr>
               )}
             </tbody>

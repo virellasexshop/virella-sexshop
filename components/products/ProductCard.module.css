@@ -1,0 +1,215 @@
+.card {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid rgba(247, 241, 232, 0.11);
+  border-radius: 24px;
+  background: #0e0d0c;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(199, 162, 124, 0.38);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.34);
+}
+
+.imageLink {
+  display: block;
+  overflow: hidden;
+  background: #171411;
+}
+
+.image {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(199, 162, 124, 0.2), transparent 32%),
+    linear-gradient(145deg, #29231e, #11100f);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(4, 4, 4, 0.04) 55%, rgba(4, 4, 4, 0.52));
+  pointer-events: none;
+}
+
+.card:hover .image {
+  transform: scale(1.025);
+}
+
+.badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #d8bc9c;
+  background: rgba(8, 8, 7, 0.74);
+  backdrop-filter: blur(12px);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.placeholder {
+  color: rgba(231, 205, 178, 0.16);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(100px, 12vw, 170px);
+  font-style: italic;
+}
+
+.imageAction {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 2;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  opacity: 0;
+  text-transform: uppercase;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover .imageAction {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.info {
+  display: flex;
+  min-width: 0;
+  min-height: 164px;
+  flex-direction: column;
+  padding: 21px 22px 20px;
+}
+
+.category {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 9px;
+  color: #928880;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.name {
+  display: block;
+  min-width: 0;
+}
+
+.name h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: 47px;
+  margin: 0;
+  color: #f4eee8;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.footer {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid rgba(247, 241, 232, 0.09);
+}
+
+.price {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.price small {
+  color: #756d67;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.price .oldPrice {
+  color: #91877f;
+  font-size: 10px;
+  letter-spacing: 0;
+  text-decoration: line-through;
+  text-transform: none;
+}
+
+.card:has(.oldPrice) .price strong {
+  color: #e3bd94;
+}
+
+.price strong {
+  color: #fff7ef;
+  font-size: clamp(16px, 1.5vw, 19px);
+  font-weight: 550;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.action {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid rgba(199, 162, 124, 0.38);
+  border-radius: 50%;
+  color: #d5b696;
+  font-size: 15px;
+  transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.action:hover {
+  color: #100d0a;
+  background: #d5b696;
+  transform: rotate(7deg);
+}
+
+@media (max-width: 560px) {
+  .card {
+    border-radius: 20px;
+  }
+
+  .info {
+    min-height: 156px;
+    padding: 19px 18px 18px;
+  }
+
+  .name h3 {
+    font-size: 17px;
+  }
+}

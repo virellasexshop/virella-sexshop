@@ -10,7 +10,7 @@ export default async function ProductPage({ params }) {
   const { id } = await params;
   const product = await getProductBySlug(id);
   if (!product) notFound();
-  const price = product.preco_promocional || product.preco;
+  const price = product.preco_final ?? product.preco;
   return (
     <>
       <Header />
@@ -22,8 +22,11 @@ export default async function ProductPage({ params }) {
           <span className="eyebrow">Curadoria premium</span>
           <h1>{product.nome}</h1>
           <p className="productLead">{product.descricao_curta || "Uma escolha sofisticada para transformar seus momentos com conforto e discrição."}</p>
+          {product.em_promocao && (
+            <span className="productDiscountLabel">{product.desconto_percentual}% de desconto</span>
+          )}
           <div className="productPrice">{money(price)}</div>
-          {product.preco_promocional && <span className="oldPrice">{money(product.preco)}</span>}
+          {product.em_promocao && <span className="oldPrice">De {money(product.preco_original ?? product.preco)}</span>}
           <AddToCartButton product={product} />
           <div className="productAssurances">
             <div><strong>Embalagem discreta</strong><span>Sem identificação do conteúdo.</span></div>

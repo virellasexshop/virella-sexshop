@@ -2,7 +2,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AuthForm from "@/components/auth/AuthForm";
 
-export const metadata = { title: "Entrar | Prazer Discreto" };
+export const metadata = { title: "Entrar | Virella Sexshop" };
 
 export default function LoginPage() {
   return (

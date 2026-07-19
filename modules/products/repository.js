@@ -5,7 +5,7 @@ export async function findAll() {
 
   const { data, error } = await supabase
     .from("produtos")
-    .select("*, categorias(id,nome,slug)")
+    .select("*, categorias!produtos_categoria_id_fkey(id,nome,slug)")
     .order("criado_em", { ascending: false });
 
   if (error) {
@@ -31,6 +31,22 @@ export async function findById(id) {
   }
 
   return data;
+}
+
+export async function findByIds(ids) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("produtos")
+    .select("*, categorias!produtos_categoria_id_fkey(id,nome,slug)")
+    .in("id", ids.slice(0, 100));
+
+  if (error) {
+    console.error("Erro ao atualizar preços do carrinho:", error);
+    return [];
+  }
+
+  return data ?? [];
 }
 
 export async function createProduct(values) {
@@ -122,15 +138,16 @@ export async function findProductsByCategorySlug(categorySlug) {
 
   const { data: categoria } = await supabase
     .from("categorias")
-    .select("id,nome,slug,descricao")
+    .select("id,nome,slug,descricao,imagem_url")
     .eq("slug", categorySlug)
-    .single();
+    .eq("ativo", true)
+    .maybeSingle();
 
   if (!categoria) return { categoria: null, produtos: [] };
 
   const { data: produtos, error } = await supabase
     .from("produtos")
-    .select("*")
+    .select("*, categorias!produtos_categoria_id_fkey(id,nome,slug)")
     .eq("ativo", true)
     .eq("categoria_id", categoria.id)
     .order("criado_em", { ascending: false });

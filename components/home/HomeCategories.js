@@ -6,18 +6,25 @@ export default function HomeCategories({ categorias = [] }) {
       <div className="container">
         <div className="homeCategoriesHeader">
           <div>
-            <span className="kicker">Explore por categoria</span>
-            <h2>Curadorias para diferentes momentos</h2>
+            <span className="kicker">Coleções Virella</span>
+            <h2>Escolha o seu momento.</h2>
           </div>
 
-          <p>
-            Encontre produtos selecionados para cuidado, prazer, autoestima e
-            experiências mais sofisticadas.
-          </p>
+          <div className="homeCategoriesIntro">
+            <p>
+              Uma curadoria delicada para explorar novas sensações com
+              liberdade, privacidade e elegância.
+            </p>
+
+            <Link href="/catalogo" className="homeCategoriesAll">
+              Ver catálogo completo
+              <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
         </div>
 
         <div className="homeCategoriesGrid">
-          {categorias.map((categoria, index) => (
+          {categorias.map((categoria) => (
             <Link
               href={`/categoria/${categoria.slug}`}
               className="homeCategoryCard"
@@ -31,16 +38,18 @@ export default function HomeCategories({ categorias = [] }) {
                   />
                 ) : (
                   <div className="homeCategoryFallback">
-                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <span>{categoria.nome?.charAt(0) || "V"}</span>
                   </div>
                 )}
 
                 <div className="homeCategoryOverlay" />
               </div>
 
-              <div className="homeCategoryContent">
-                <span className="homeCategoryLabel">Categoria</span>
+              <div className="homeCategoryTopline">
+                <span>Coleção Virella</span>
+              </div>
 
+              <div className="homeCategoryContent">
                 <h3>{categoria.nome}</h3>
 
                 {categoria.descricao && (
@@ -48,8 +57,8 @@ export default function HomeCategories({ categorias = [] }) {
                 )}
 
                 <div className="homeCategoryLink">
-                  Explorar categoria
-                  <span aria-hidden="true">→</span>
+                  <span>Descobrir coleção</span>
+                  <strong aria-hidden="true">↗</strong>
                 </div>
               </div>
             </Link>

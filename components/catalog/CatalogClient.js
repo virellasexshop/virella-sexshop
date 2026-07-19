@@ -18,8 +18,8 @@ export default function CatalogClient({ products, categories }) {
     });
 
     return [...list].sort((a, b) => {
-      const priceA = Number(a.preco_promocional || a.preco || 0);
-      const priceB = Number(b.preco_promocional || b.preco || 0);
+      const priceA = Number(a.preco_final ?? a.preco ?? 0);
+      const priceB = Number(b.preco_final ?? b.preco ?? 0);
       if (sort === "menor-preco") return priceA - priceB;
       if (sort === "maior-preco") return priceB - priceA;
       if (sort === "nome") return String(a.nome).localeCompare(String(b.nome), "pt-BR");
