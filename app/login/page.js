@@ -4,7 +4,14 @@ import AuthForm from "@/components/auth/AuthForm";
 
 export const metadata = { title: "Entrar | Virella Sexshop" };
 
-export default function LoginPage() {
+function safeRedirect(value) {
+  const redirect = String(value || "");
+  return redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "";
+}
+
+export default async function LoginPage({ searchParams }) {
+  const query = await searchParams;
+  const redirectTo = safeRedirect(query?.redirect);
   return (
     <>
       <Header />
@@ -19,7 +26,7 @@ export default function LoginPage() {
             <span>03 · Compra mais rápida</span>
           </div>
         </section>
-        <AuthForm mode="login" />
+        <AuthForm mode="login" redirectTo={redirectTo} />
       </main>
       <Footer />
     </>

@@ -1,23 +1,26 @@
 import { NextResponse } from "next/server";
-import { getProductsByIds } from "@/modules/products/product.service";
+import { calculateCheckout } from "@/lib/checkout";
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const ids = Array.isArray(body?.ids) ? [...new Set(body.ids)].slice(0, 100) : [];
-    const products = await getProductsByIds(ids);
+    const checkout = await calculateCheckout(body?.items);
 
     return NextResponse.json({
-      products: products.map((product) => ({
-        id: product.id,
-        nome: product.nome,
-        slug: product.slug,
-        imagem_principal: product.imagem_principal,
-        preco: product.preco_final ?? product.preco,
+      products: checkout.items.map((item) => ({
+        id: item.produto_id,
+        variacao_id: item.variacao_id,
+        variacao_nome: item.variacao_nome,
+        nome: item.nome.replace(item.variacao_nome ? ` — ${item.variacao_nome}` : "", ""),
+        imagem_principal: item.imagem_url,
+        preco: item.preco_unitario,
       })),
     });
   } catch (error) {
     console.error("Erro ao consultar preços:", error);
-    return NextResponse.json({ products: [] }, { status: 400 });
+    return NextResponse.json(
+      { products: [], error: error?.message || "Não foi possível atualizar o carrinho." },
+      { status: 400 }
+    );
   }
 }

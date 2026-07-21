@@ -130,19 +130,28 @@ export default async function AdminProdutosPage() {
                   </td>
 
                   <td>
-                    <form action={updateProductStockAction} className="adminStockForm">
-                      <input type="hidden" name="produto_id" value={produto.id} />
-                      <input
-                        type="number"
-                        name="quantidade"
-                        min="0"
-                        step="1"
-                        required
-                        defaultValue={Number(produto.quantidade || 0)}
-                        aria-label={`Estoque de ${produto.nome}`}
-                      />
-                      <button type="submit" className="adminRowButton">Salvar</button>
-                    </form>
+                    {produto.produto_variacoes?.length ? (
+                      <div className="adminVariantStock">
+                        <strong>{Number(produto.quantidade || 0)} unidades</strong>
+                        <Link href={`/admin/produtos/${produto.id}`}>
+                          {produto.produto_variacoes.length} variações · gerenciar
+                        </Link>
+                      </div>
+                    ) : (
+                      <form action={updateProductStockAction} className="adminStockForm">
+                        <input type="hidden" name="produto_id" value={produto.id} />
+                        <input
+                          type="number"
+                          name="quantidade"
+                          min="0"
+                          step="1"
+                          required
+                          defaultValue={Number(produto.quantidade || 0)}
+                          aria-label={`Estoque de ${produto.nome}`}
+                        />
+                        <button type="submit" className="adminRowButton">Salvar</button>
+                      </form>
+                    )}
                     {Number(produto.quantidade || 0) === 0 && (
                       <span className="adminStockWarning">Sem estoque</span>
                     )}
@@ -172,7 +181,12 @@ export default async function AdminProdutosPage() {
                   </td>
 
                   <td>
-                    <ProductDeleteButton productId={produto.id} productName={produto.nome} />
+                    <div className="adminProductActions">
+                      <Link href={`/admin/produtos/${produto.id}`} className="adminManageLink">
+                        Fotos e variações
+                      </Link>
+                      <ProductDeleteButton productId={produto.id} productName={produto.nome} />
+                    </div>
                   </td>
                 </tr>
               ))}

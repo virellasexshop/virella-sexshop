@@ -1,0 +1,42 @@
+VIRELLA — LOGIN OBRIGATÓRIO, GALERIA E VARIAÇÕES
+
+ORDEM CORRETA DE INSTALAÇÃO
+
+1. Faça um backup da pasta atual.
+2. Extraia este ZIP sobre a pasta principal do projeto.
+3. Confirme a substituição dos arquivos existentes.
+4. Antes de publicar, abra o Supabase > SQL Editor.
+5. Copie todo o conteúdo de supabase/produtos-variacoes.sql.
+6. Clique em Run e confirme que terminou sem erro.
+7. Só depois, no terminal do VS Code, execute:
+
+git add .
+git commit -m "Adiciona login obrigatorio fotos e variacoes"
+git push
+
+O QUE MUDOU
+
+- Adicionar ao carrinho exige uma conta conectada.
+- Depois do login, o cliente volta ao produto ou checkout anterior.
+- O servidor também bloqueia checkout sem sessão válida.
+- O cadastro de produto aceita até 12 fotos adicionais.
+- Variações são opcionais e podem ter nome, SKU, preço, estoque e foto.
+- Produtos sem variações continuam usando o estoque principal.
+- Produtos com variações usam o estoque individual de cada opção.
+- A opção escolhida aparece no carrinho, pedido e Mercado Pago.
+- O pagamento aprovado baixa o estoque da variação correta.
+- Em Admin > Produtos, o botão Fotos e variações abre o gerenciamento.
+
+IMPORTANTE SOBRE IMAGENS
+
+O formulário atual passa pelo servidor da Vercel. Mantenha a soma das imagens
+de um novo produto abaixo de aproximadamente 3,5 MB. Use JPG ou WEBP comprimido.
+
+TESTE RECOMENDADO
+
+1. Abra um produto deslogado e clique em Adicionar ao carrinho.
+2. Confirme que o site abre o login e volta ao produto depois de entrar.
+3. Cadastre um produto com duas variações e duas fotos.
+4. Escolha cada variação na página pública e confira foto, preço e estoque.
+5. Adicione duas variações diferentes ao carrinho e confira as duas linhas.
+6. Faça um pedido de teste e confirme a baixa no estoque após aprovação.

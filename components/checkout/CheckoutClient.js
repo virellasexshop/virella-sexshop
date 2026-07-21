@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { getCart } from "@/lib/carrinho";
 import styles from "./CheckoutClient.module.css";
@@ -14,6 +15,7 @@ const money = (value) => Number(value || 0).toLocaleString("pt-BR", {
 const STATES = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
 
 export default function CheckoutClient() {
+  const router = useRouter();
   const [cart, setCart] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,11 @@ export default function CheckoutClient() {
 
       const supabase = createSupabaseBrowserClient();
       supabase.auth.getUser().then(({ data }) => {
-        if (!active || !data.user) return;
+        if (!active) return;
+        if (!data.user) {
+          router.replace("/login?redirect=%2Fcheckout");
+          return;
+        }
         setCustomer((current) => ({
           ...current,
           nome: data.user.user_metadata?.nome || "",
@@ -64,7 +70,7 @@ export default function CheckoutClient() {
     }, 0);
 
     return () => { active = false; window.clearTimeout(timer); };
-  }, []);
+  }, [router]);
 
   function updateField(event) {
     const { name, value } = event.target;
@@ -80,6 +86,10 @@ export default function CheckoutClient() {
       const supabase = createSupabaseBrowserClient();
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
+      if (!token) {
+        router.push("/login?redirect=%2Fcheckout");
+        return;
+      }
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
@@ -146,7 +156,7 @@ export default function CheckoutClient() {
           <span className={styles.summaryLabel}>Resumo do pedido</span>
           <div className={styles.items}>
             {summary?.items?.map((item) => (
-              <div key={item.produto_id} className={styles.item}>
+              <div key={`${item.produto_id}:${item.variacao_id || "produto"}`} className={styles.item}>
                 <div
                   className={styles.thumb}
                   style={item.imagem_url ? { backgroundImage: `url(${item.imagem_url})` } : undefined}

@@ -1,0 +1,25 @@
+.card { margin-bottom: 22px; padding: 26px; border: 1px solid rgba(255,255,255,.08); border-radius: 22px; background: #11100f; }
+.card > header { margin-bottom: 22px; }
+.card header span { color: #c7a27c; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+.card header h2 { margin: 7px 0 0; color: #f3e9df; font-size: 24px; font-weight: 500; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 14px; }
+.gallery figure { min-width: 0; margin: 0; }
+.gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 15px; border: 1px solid rgba(255,255,255,.08); }
+.gallery figcaption { margin-top: 7px; color: #918981; font-size: 11px; }
+.deleteLink { margin-top: 7px; padding: 0; border: 0; background: none; color: #db8585; font-size: 11px; cursor: pointer; }
+.addMediaForm { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+.addMediaForm input { flex: 1; padding: 13px; border: 1px solid rgba(255,255,255,.1); border-radius: 13px; background: #090909; color: #aaa; }
+.variations { display: grid; gap: 13px; }
+.variation { display: grid; grid-template-columns: 70px 1fr auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: #0a0908; }
+.variation > img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; }
+.variationForm { display: grid; grid-template-columns: 1.2fr .9fr .75fr .6fr 1.1fr auto auto; align-items: end; gap: 10px; }
+.variationForm label,.newVariation label { display: grid; gap: 6px; color: #989088; font-size: 11px; }
+.variationForm input,.newVariation input { min-width: 0; height: 42px; padding: 0 11px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: #060606; color: #fff; }
+.variationForm .active { display: flex; align-items: center; align-self: center; margin-top: 17px; color: #d9b78f; }
+.variationForm .active input { width: 17px; height: 17px; }
+.deleteButton { padding: 10px; border: 1px solid rgba(219,91,91,.25); border-radius: 10px; background: rgba(219,91,91,.06); color: #e19292; cursor: pointer; }
+.empty { color: #918981; }
+.newVariation { display: grid; grid-template-columns: 1.3fr 1fr 1fr .7fr 1.2fr auto; align-items: end; gap: 12px; }
+
+@media (max-width: 1200px) { .variation { grid-template-columns: 60px 1fr; } .variationForm { grid-template-columns: repeat(2,minmax(0,1fr)); } .deleteButton { grid-column: 2; } .newVariation { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 650px) { .card { padding: 18px; } .addMediaForm { align-items: stretch; flex-direction: column; } .variation { grid-template-columns: 1fr; } .variationForm,.newVariation { grid-template-columns: 1fr; } .deleteButton { grid-column: auto; } }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-export default function AuthForm({ mode }) {
+export default function AuthForm({ mode, redirectTo = "" }) {
   const isRegister = mode === "register";
   const router = useRouter();
   const [name, setName] = useState("");
@@ -31,13 +31,13 @@ export default function AuthForm({ mode }) {
         if (!data.session) {
           setMessage("Cadastro realizado. Verifique seu e-mail para confirmar a conta.");
         } else {
-          router.push("/minha-conta");
+          router.push(redirectTo || "/minha-conta");
           router.refresh();
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        router.push("/minha-conta");
+        router.push(redirectTo || "/minha-conta");
         router.refresh();
       }
     } catch (error) {
@@ -73,7 +73,9 @@ export default function AuthForm({ mode }) {
       </form>
       <p className="authSwitch">
         {isRegister ? "Já possui uma conta?" : "Ainda não possui uma conta?"}{" "}
-        <Link href={isRegister ? "/login" : "/cadastro"}>{isRegister ? "Entrar" : "Cadastre-se"}</Link>
+        <Link href={`${isRegister ? "/login" : "/cadastro"}${redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : ""}`}>
+          {isRegister ? "Entrar" : "Cadastre-se"}
+        </Link>
       </p>
     </section>
   );

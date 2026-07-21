@@ -4,7 +4,14 @@ import AuthForm from "@/components/auth/AuthForm";
 
 export const metadata = { title: "Criar conta |  Virella Sexshop" };
 
-export default function CadastroPage() {
+function safeRedirect(value) {
+  const redirect = String(value || "");
+  return redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "";
+}
+
+export default async function CadastroPage({ searchParams }) {
+  const query = await searchParams;
+  const redirectTo = safeRedirect(query?.redirect);
   return (
     <>
       <Header />
@@ -14,7 +21,7 @@ export default function CadastroPage() {
           <h1>Crie sua conta em poucos instantes.</h1>
           <p>Tenha uma jornada personalizada, segura e completamente discreta.</p>
         </section>
-        <AuthForm mode="register" />
+        <AuthForm mode="register" redirectTo={redirectTo} />
       </main>
       <Footer />
     </>

@@ -16,14 +16,15 @@ function siteUrl(request) {
   ).replace(/\/$/, "");
 }
 
-async function optionalUser(request) {
+async function requiredUser(request) {
   const authorization = request.headers.get("authorization") || "";
   const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
-  if (!token) return null;
+  if (!token) throw new Error("Entre na sua conta para finalizar a compra.");
 
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase.auth.getUser(token);
-  return error ? null : data.user;
+  if (error || !data.user) throw new Error("Sua sessão expirou. Entre novamente para continuar.");
+  return data.user;
 }
 
 export async function POST(request) {
@@ -33,11 +34,11 @@ export async function POST(request) {
     const body = await request.json();
     const [checkout, user] = await Promise.all([
       calculateCheckout(body?.items),
-      optionalUser(request),
+      requiredUser(request),
     ]);
     const customer = validateCustomer(body?.customer);
 
-    order = await createOrder({ userId: user?.id, customer, checkout });
+    order = await createOrder({ userId: user.id, customer, checkout });
     const preference = await createPaymentPreference({
       order,
       items: checkout.items,
@@ -64,6 +65,7 @@ export async function POST(request) {
       ? error.message
       : error?.message || "Não foi possível iniciar o pagamento.";
 
-    return NextResponse.json({ error: knownMessage }, { status: 400 });
+    const isAuthError = knownMessage.includes("Entre na sua conta") || knownMessage.includes("sessão expirou");
+    return NextResponse.json({ error: knownMessage }, { status: isAuthError ? 401 : 400 });
   }
 }

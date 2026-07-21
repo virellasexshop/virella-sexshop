@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createProductAction } from "../actions";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ProductOptionsManager from "@/components/admin/ProductOptionsManager";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { getAdminCategories } from "@/modules/categories/category.service";
 
@@ -70,9 +71,11 @@ export default async function NovoProdutoPage() {
           </div>
 
           <div className="formCard">
-            <h2>Imagem do produto</h2>
+            <h2>Imagem principal</h2>
             <ImageUploader name="imagem_principal" />
           </div>
+
+          <ProductOptionsManager />
 
           <div className="formCard">
             <h2>Preços</h2>

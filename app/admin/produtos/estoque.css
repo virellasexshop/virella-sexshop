@@ -131,6 +131,30 @@
   text-align: center;
 }
 
+.adminVariantStock,
+.adminProductActions {
+  display: grid;
+  gap: 7px;
+}
+
+.adminVariantStock strong {
+  color: #f0e5da;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.adminVariantStock a,
+.adminManageLink {
+  color: #d6b28a;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.adminVariantStock a:hover,
+.adminManageLink:hover {
+  color: #fff;
+}
+
 @media (max-width: 800px) {
   .adminInventorySummary {
     grid-template-columns: 1fr;

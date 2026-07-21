@@ -1,11 +1,38 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
+async function loadProductDetails(supabase, product) {
+  if (!product) return null;
+
+  const [{ data: images, error: imagesError }, { data: variations, error: variationsError }] =
+    await Promise.all([
+      supabase
+        .from("produto_imagens")
+        .select("id,url,ordem")
+        .eq("produto_id", product.id)
+        .order("ordem", { ascending: true }),
+      supabase
+        .from("produto_variacoes")
+        .select("id,nome,sku,preco,quantidade,imagem_url,ativo,ordem")
+        .eq("produto_id", product.id)
+        .order("ordem", { ascending: true }),
+    ]);
+
+  if (imagesError) throw imagesError;
+  if (variationsError) throw variationsError;
+
+  return {
+    ...product,
+    produto_imagens: images || [],
+    produto_variacoes: variations || [],
+  };
+}
+
 export async function findAll() {
   const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
     .from("produtos")
-    .select("*, categorias!produtos_categoria_id_fkey(id,nome,slug)")
+    .select("*, categorias!produtos_categoria_id_fkey(id,nome,slug), produto_variacoes(id,quantidade,ativo)")
     .order("criado_em", { ascending: false });
 
   if (error) {
@@ -30,7 +57,7 @@ export async function findById(id) {
     return null;
   }
 
-  return data;
+  return loadProductDetails(supabase, data);
 }
 
 export async function findByIds(ids) {
@@ -113,7 +140,7 @@ export async function findBySlug(slug) {
     return null;
   }
 
-  return data;
+  return loadProductDetails(supabase, data);
 }
 export async function findFeaturedProducts() {
   const supabase = createSupabaseAdminClient();
@@ -215,4 +242,115 @@ export async function findProductsByCategoryId(categoryId) {
   }
 
   return data ?? [];
+}
+
+export async function createProductImages(productId, images) {
+  if (!images?.length) return [];
+  const supabase = createSupabaseAdminClient();
+  const values = images.map((image, index) => ({
+    produto_id: productId,
+    url: image.url,
+    ordem: Number.isInteger(image.ordem) ? image.ordem : index,
+  }));
+  const { data, error } = await supabase.from("produto_imagens").insert(values).select();
+  if (error) throw error;
+  return data || [];
+}
+
+export async function deleteProductImage(id) {
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase.from("produto_imagens").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function createProductVariations(productId, variations) {
+  if (!variations?.length) return [];
+  const supabase = createSupabaseAdminClient();
+  const values = variations.map((variation, index) => ({
+    produto_id: productId,
+    nome: variation.nome,
+    sku: variation.sku || null,
+    preco: variation.preco ?? null,
+    quantidade: variation.quantidade,
+    imagem_url: variation.imagem_url || null,
+    ativo: variation.ativo !== false,
+    ordem: Number.isInteger(variation.ordem) ? variation.ordem : index,
+  }));
+  const { data, error } = await supabase.from("produto_variacoes").insert(values).select();
+  if (error) throw error;
+  await syncProductStock(productId);
+  return data || [];
+}
+
+export async function updateProductVariation(id, values) {
+  const supabase = createSupabaseAdminClient();
+  const { data: current, error: currentError } = await supabase
+    .from("produto_variacoes")
+    .select("produto_id")
+    .eq("id", id)
+    .single();
+  if (currentError) throw currentError;
+
+  const { data, error } = await supabase
+    .from("produto_variacoes")
+    .update({ ...values, atualizado_em: new Date().toISOString() })
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  await syncProductStock(current.produto_id);
+  return data;
+}
+
+export async function deleteProductVariation(id) {
+  const supabase = createSupabaseAdminClient();
+  const { data: current, error: currentError } = await supabase
+    .from("produto_variacoes")
+    .select("produto_id")
+    .eq("id", id)
+    .single();
+  if (currentError) throw currentError;
+
+  const { error } = await supabase.from("produto_variacoes").delete().eq("id", id);
+  if (error) throw error;
+  await syncProductStock(current.produto_id);
+}
+
+export async function findVariantsByIds(ids) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("produto_variacoes")
+    .select("id,produto_id,nome,sku,preco,quantidade,imagem_url,ativo,ordem")
+    .in("id", ids.slice(0, 100));
+  if (error) throw error;
+  return data || [];
+}
+
+export async function findVariantsByProductIds(productIds) {
+  if (!Array.isArray(productIds) || productIds.length === 0) return [];
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("produto_variacoes")
+    .select("id,produto_id,nome,sku,preco,quantidade,imagem_url,ativo,ordem")
+    .in("produto_id", productIds.slice(0, 100))
+    .order("ordem", { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function syncProductStock(productId) {
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("produto_variacoes")
+    .select("quantidade")
+    .eq("produto_id", productId)
+    .eq("ativo", true);
+  if (error) throw error;
+  const quantidade = (data || []).reduce((total, variation) => total + Number(variation.quantidade || 0), 0);
+  const { error: updateError } = await supabase
+    .from("produtos")
+    .update({ quantidade })
+    .eq("id", productId);
+  if (updateError) throw updateError;
 }
