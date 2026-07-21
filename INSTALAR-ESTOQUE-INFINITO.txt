@@ -1,0 +1,29 @@
+ATUALIZAÇÃO VIRELLA — ESTOQUE INFINITO
+
+1. Faça um backup da pasta atual do projeto.
+2. Extraia este ZIP na pasta principal do projeto.
+3. Confirme a substituição dos arquivos existentes.
+4. Abra o Supabase > SQL Editor.
+5. Execute TODO o arquivo: supabase/estoque-infinito.sql
+6. Envie a atualização:
+
+   git add .
+   git commit -m "Ativar estoque infinito"
+   git push
+
+O QUE MUDA
+
+- O cadastro não pede mais quantidade em estoque.
+- As variações não pedem mais estoque.
+- Nenhum produto ou opção fica esgotado por quantidade.
+- O checkout não bloqueia compras por estoque.
+- Pagamentos aprovados não diminuem mais quantidades no banco.
+- O painel mostra produtos ativos e inativos no lugar do estoque.
+- A quantidade do carrinho continua existindo: ela indica apenas quantas
+  unidades o cliente deseja comprar.
+
+IMPORTANTE
+
+- Não é necessário apagar as colunas antigas de quantidade do Supabase.
+- Não execute novamente os SQLs antigos de estoque depois desta atualização.
+- Não é necessário criar novas variáveis na Vercel.

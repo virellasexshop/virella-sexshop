@@ -50,11 +50,6 @@ function parseMoney(value) {
   return Number.isFinite(number) ? number : null;
 }
 
-function parseInteger(value, fallback = 0) {
-  const number = Number.parseInt(String(value ?? "").trim(), 10);
-  return Number.isFinite(number) ? Math.max(0, number) : fallback;
-}
-
 function uniqueSlug(baseValue, usedSlugs) {
   const base = slugify(baseValue) || "produto";
   let candidate = base;
@@ -208,7 +203,7 @@ export async function importProductsAction(_previousState, formData) {
         descricao: String(row.descricao || "").trim() || null,
         preco: row.preco,
         preco_promocional: parseMoney(row.preco_promocional),
-        quantidade: parseInteger(row.quantidade, 0),
+        quantidade: 0,
         sku,
         codigo_barras: String(row.codigo_barras || "").trim() || null,
         imagem_principal: String(row.imagem_url || row.imagem_principal || "").trim() || null,

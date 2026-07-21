@@ -92,12 +92,8 @@ export default async function NovoProdutoPage() {
           </div>
 
           <div className="formCard">
-            <h2>Estoque</h2>
+            <h2>Identificação</h2>
             <div className="formGrid">
-              <label>
-                Quantidade
-                <input name="quantidade" type="number" min="0" defaultValue="0" />
-              </label>
               <label>
                 SKU
                 <input name="sku" placeholder="VIR-001" />

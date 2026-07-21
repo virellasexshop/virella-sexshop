@@ -2,6 +2,13 @@
 .card > header { margin-bottom: 22px; }
 .card header span { color: #c7a27c; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
 .card header h2 { margin: 7px 0 0; color: #f3e9df; font-size: 24px; font-weight: 500; }
+.mainOption { border-color: rgba(199,162,124,.28); }
+.mainOptionGrid { display: grid; grid-template-columns: 110px 1fr; align-items: end; gap: 18px; }
+.mainOptionGrid > img { width: 110px; height: 110px; object-fit: cover; border-radius: 16px; }
+.mainOptionForm { display: grid; grid-template-columns: 1.3fr .8fr auto; align-items: end; gap: 12px; }
+.mainOptionForm label { display: grid; gap: 6px; color: #989088; font-size: 11px; }
+.mainOptionForm input { height: 42px; padding: 0 11px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: #060606; color: #fff; }
+.mainOptionHint { margin: 15px 0 0; color: #9a9188; font-size: 12px; line-height: 1.6; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 14px; }
 .gallery figure { min-width: 0; margin: 0; }
 .gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 15px; border: 1px solid rgba(255,255,255,.08); }
@@ -22,4 +29,4 @@
 .newVariation { display: grid; grid-template-columns: 1.3fr 1fr 1fr .7fr 1.2fr auto; align-items: end; gap: 12px; }
 
 @media (max-width: 1200px) { .variation { grid-template-columns: 60px 1fr; } .variationForm { grid-template-columns: repeat(2,minmax(0,1fr)); } .deleteButton { grid-column: 2; } .newVariation { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-@media (max-width: 650px) { .card { padding: 18px; } .addMediaForm { align-items: stretch; flex-direction: column; } .variation { grid-template-columns: 1fr; } .variationForm,.newVariation { grid-template-columns: 1fr; } .deleteButton { grid-column: auto; } }
+@media (max-width: 650px) { .card { padding: 18px; } .mainOptionGrid,.mainOptionForm { grid-template-columns: 1fr; } .addMediaForm { align-items: stretch; flex-direction: column; } .variation { grid-template-columns: 1fr; } .variationForm,.newVariation { grid-template-columns: 1fr; } .deleteButton { grid-column: auto; } }

@@ -5,7 +5,6 @@ import { getAdminProducts } from "@/modules/products/product.service";
 import {
   toggleProductStatusAction,
   updateProductCategoryAction,
-  updateProductStockAction,
 } from "./actions";
 import "./estoque.css";
 
@@ -22,13 +21,8 @@ export default async function AdminProdutosPage() {
     getPublicCategories(),
   ]);
 
-  const totalEstoque = produtos.reduce(
-    (total, produto) => total + Number(produto.quantidade || 0),
-    0
-  );
-  const semEstoque = produtos.filter(
-    (produto) => Number(produto.quantidade || 0) === 0
-  ).length;
+  const produtosAtivos = produtos.filter((produto) => produto.ativo !== false).length;
+  const produtosInativos = produtos.length - produtosAtivos;
 
   return (
     <main className="adminShell">
@@ -51,10 +45,10 @@ export default async function AdminProdutosPage() {
       <section className="adminContent">
         <div className="adminTop">
           <div>
-            <span className="kicker">Catálogo e estoque</span>
+            <span className="kicker">Catálogo</span>
             <h1>Produtos</h1>
             <p className="adminTopDescription">
-              Atualize quantidades, organize categorias ou retire itens da loja.
+              Organize categorias, opções e a exibição dos itens da loja.
             </p>
           </div>
 
@@ -69,12 +63,12 @@ export default async function AdminProdutosPage() {
             <strong>{produtos.length}</strong>
           </div>
           <div>
-            <span>Unidades em estoque</span>
-            <strong>{totalEstoque}</strong>
+            <span>Produtos ativos</span>
+            <strong>{produtosAtivos}</strong>
           </div>
           <div>
-            <span>Sem estoque</span>
-            <strong>{semEstoque}</strong>
+            <span>Produtos inativos</span>
+            <strong>{produtosInativos}</strong>
           </div>
         </div>
 
@@ -85,7 +79,6 @@ export default async function AdminProdutosPage() {
                 <th>Produto</th>
                 <th>Categoria</th>
                 <th>Preço</th>
-                <th>Estoque</th>
                 <th>Status</th>
                 <th>Vitrine</th>
                 <th>Ações</th>
@@ -130,34 +123,6 @@ export default async function AdminProdutosPage() {
                   </td>
 
                   <td>
-                    {produto.produto_variacoes?.length ? (
-                      <div className="adminVariantStock">
-                        <strong>{Number(produto.quantidade || 0)} unidades</strong>
-                        <Link href={`/admin/produtos/${produto.id}`}>
-                          {produto.produto_variacoes.length} variações · gerenciar
-                        </Link>
-                      </div>
-                    ) : (
-                      <form action={updateProductStockAction} className="adminStockForm">
-                        <input type="hidden" name="produto_id" value={produto.id} />
-                        <input
-                          type="number"
-                          name="quantidade"
-                          min="0"
-                          step="1"
-                          required
-                          defaultValue={Number(produto.quantidade || 0)}
-                          aria-label={`Estoque de ${produto.nome}`}
-                        />
-                        <button type="submit" className="adminRowButton">Salvar</button>
-                      </form>
-                    )}
-                    {Number(produto.quantidade || 0) === 0 && (
-                      <span className="adminStockWarning">Sem estoque</span>
-                    )}
-                  </td>
-
-                  <td>
                     <form action={toggleProductStatusAction}>
                       <input type="hidden" name="produto_id" value={produto.id} />
                       <input type="hidden" name="ativo" value={String(Boolean(produto.ativo))} />
@@ -193,7 +158,7 @@ export default async function AdminProdutosPage() {
 
               {produtos.length === 0 && (
                 <tr>
-                  <td colSpan="7" className="adminEmptyCell">
+                  <td colSpan="6" className="adminEmptyCell">
                     Nenhum produto cadastrado.
                   </td>
                 </tr>

@@ -1,0 +1,36 @@
+VIRELLA — PRODUTO PRINCIPAL COMO PRIMEIRA OPÇÃO
+
+O QUE MUDA
+
+- Quando houver uma ou mais variações, o próprio produto principal pode ser
+  exibido como a primeira opção.
+- A opção principal usa a imagem, o preço e o estoque principais do produto.
+- As variações cadastradas passam a ser apenas as alternativas extras.
+- Assim, duas opções precisam de apenas duas fotos: uma principal e uma extra.
+
+INSTALAÇÃO
+
+1. Extraia este ZIP sobre a pasta principal do projeto.
+2. Confirme a substituição dos arquivos.
+3. Abra supabase/opcao-principal.sql.
+4. Copie o arquivo inteiro para Supabase > SQL Editor e clique em Run.
+5. Depois execute no terminal:
+
+git add .
+git commit -m "Usa produto principal como primeira opcao"
+git push
+
+AJUSTE DO PRODUTO QUE JÁ EXISTE
+
+1. Entre em Admin > Produtos > Fotos e variações.
+2. Na seção Produto principal, informe o nome da opção, por exemplo Morango.
+3. Informe o estoque correto apenas dessa opção e clique em Salvar.
+4. Exclua a variação duplicada Morango da lista de variações.
+
+O resultado será:
+
+- Morango: usa a foto principal.
+- Algodão-doce: usa somente a foto da variação adicional.
+
+Não execute novamente produtos-variacoes.sql. Para esta atualização, execute
+somente supabase/opcao-principal.sql.

@@ -278,19 +278,11 @@ export async function createProductVariations(productId, variations) {
   }));
   const { data, error } = await supabase.from("produto_variacoes").insert(values).select();
   if (error) throw error;
-  await syncProductStock(productId);
   return data || [];
 }
 
 export async function updateProductVariation(id, values) {
   const supabase = createSupabaseAdminClient();
-  const { data: current, error: currentError } = await supabase
-    .from("produto_variacoes")
-    .select("produto_id")
-    .eq("id", id)
-    .single();
-  if (currentError) throw currentError;
-
   const { data, error } = await supabase
     .from("produto_variacoes")
     .update({ ...values, atualizado_em: new Date().toISOString() })
@@ -298,22 +290,13 @@ export async function updateProductVariation(id, values) {
     .select()
     .single();
   if (error) throw error;
-  await syncProductStock(current.produto_id);
   return data;
 }
 
 export async function deleteProductVariation(id) {
   const supabase = createSupabaseAdminClient();
-  const { data: current, error: currentError } = await supabase
-    .from("produto_variacoes")
-    .select("produto_id")
-    .eq("id", id)
-    .single();
-  if (currentError) throw currentError;
-
   const { error } = await supabase.from("produto_variacoes").delete().eq("id", id);
   if (error) throw error;
-  await syncProductStock(current.produto_id);
 }
 
 export async function findVariantsByIds(ids) {
@@ -337,20 +320,4 @@ export async function findVariantsByProductIds(productIds) {
     .order("ordem", { ascending: true });
   if (error) throw error;
   return data || [];
-}
-
-export async function syncProductStock(productId) {
-  const supabase = createSupabaseAdminClient();
-  const { data, error } = await supabase
-    .from("produto_variacoes")
-    .select("quantidade")
-    .eq("produto_id", productId)
-    .eq("ativo", true);
-  if (error) throw error;
-  const quantidade = (data || []).reduce((total, variation) => total + Number(variation.quantidade || 0), 0);
-  const { error: updateError } = await supabase
-    .from("produtos")
-    .update({ quantidade })
-    .eq("id", productId);
-  if (updateError) throw updateError;
 }

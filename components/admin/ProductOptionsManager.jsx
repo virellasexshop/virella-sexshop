@@ -9,7 +9,6 @@ function emptyVariation() {
     nome: "",
     sku: "",
     preco: "",
-    quantidade: "0",
   };
 }
 
@@ -98,6 +97,21 @@ export default function ProductOptionsManager() {
 
         {hasVariations && (
           <div className={styles.variationList}>
+            <article className={`${styles.variationCard} ${styles.mainOptionCard}`}>
+              <header>
+                <strong>Opção principal</strong>
+                <span>Usa a foto e o preço principais</span>
+              </header>
+              <label>
+                Nome desta opção
+                <input
+                  name="opcao_principal_nome"
+                  required
+                  placeholder="Ex: Morango"
+                />
+              </label>
+            </article>
+
             {variations.map((variation, index) => (
               <article className={styles.variationCard} key={variation.key}>
                 <header>
@@ -130,17 +144,6 @@ export default function ProductOptionsManager() {
                       value={variation.preco}
                       onChange={(event) => updateVariation(index, "preco", event.target.value)}
                       placeholder="Vazio = preço principal"
-                    />
-                  </label>
-                  <label>
-                    Estoque
-                    <input
-                      type="number"
-                      min="0"
-                      step="1"
-                      required
-                      value={variation.quantidade}
-                      onChange={(event) => updateVariation(index, "quantidade", event.target.value)}
                     />
                   </label>
                 </div>

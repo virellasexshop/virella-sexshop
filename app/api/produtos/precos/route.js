@@ -11,6 +11,7 @@ export async function POST(request) {
         id: item.produto_id,
         variacao_id: item.variacao_id,
         variacao_nome: item.variacao_nome,
+        opcao_principal: !item.variacao_id && Boolean(item.variacao_nome),
         nome: item.nome.replace(item.variacao_nome ? ` — ${item.variacao_nome}` : "", ""),
         imagem_principal: item.imagem_url,
         preco: item.preco_unitario,

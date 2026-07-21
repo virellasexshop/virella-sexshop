@@ -9,6 +9,7 @@ import {
   deleteProductImageAction,
   deleteVariationAction,
   updateVariationAction,
+  updateMainOptionAction,
 } from "../actions";
 import styles from "./produto.module.css";
 
@@ -27,10 +28,36 @@ export default async function ManageProductPage({ params }) {
           <div>
             <span className="kicker">Produto</span>
             <h1>{product.nome}</h1>
-            <p className="adminTopDescription">Gerencie fotos, opções e estoque por variação.</p>
+            <p className="adminTopDescription">Gerencie fotos e opções do produto.</p>
           </div>
           <Link href="/admin/produtos" className="adminButton secondary">Voltar</Link>
         </div>
+
+        {(product.produto_variacoes || []).length > 0 && (
+          <section className={`${styles.card} ${styles.mainOption}`}>
+            <header><div><span>Primeira opção</span><h2>Produto principal</h2></div></header>
+            <div className={styles.mainOptionGrid}>
+              {product.imagem_principal && <img src={product.imagem_principal} alt={product.nome} />}
+              <form action={updateMainOptionAction} className={styles.mainOptionForm}>
+                <input type="hidden" name="produto_id" value={product.id} />
+                <label>
+                  Nome da opção principal
+                  <input
+                    name="opcao_principal_nome"
+                    defaultValue={product.opcao_principal_nome || ""}
+                    required
+                    placeholder="Ex: Morango"
+                  />
+                </label>
+                <button type="submit" className="adminButton">Salvar opção principal</button>
+              </form>
+            </div>
+            <p className={styles.mainOptionHint}>
+              Esta opção usa automaticamente a imagem e o preço principais. Depois de salvar,
+              você pode excluir abaixo a variação que estava duplicando essa mesma opção.
+            </p>
+          </section>
+        )}
 
         <section className={styles.card}>
           <header><div><span>Galeria</span><h2>Fotos adicionais</h2></div></header>
@@ -70,7 +97,6 @@ export default async function ManageProductPage({ params }) {
                   <label>Nome<input name="nome" defaultValue={variation.nome} required /></label>
                   <label>SKU<input name="sku" defaultValue={variation.sku || ""} /></label>
                   <label>Preço próprio<input name="preco" inputMode="decimal" defaultValue={variation.preco ?? ""} placeholder="Usar preço principal" /></label>
-                  <label>Estoque<input name="quantidade" type="number" min="0" defaultValue={variation.quantidade} required /></label>
                   <label>Trocar imagem<input name="imagem" type="file" accept="image/png,image/jpeg,image/webp" /></label>
                   <label className={styles.active}><input name="ativo" type="checkbox" defaultChecked={variation.ativo} /> Ativa</label>
                   <button type="submit" className="adminRowButton">Salvar variação</button>
@@ -97,7 +123,6 @@ export default async function ManageProductPage({ params }) {
             <label>Nome<input name="nome" required placeholder="Ex: Morango" /></label>
             <label>SKU<input name="sku" placeholder="VIR-GEL-MOR" /></label>
             <label>Preço próprio<input name="preco" inputMode="decimal" placeholder="Vazio = preço principal" /></label>
-            <label>Estoque<input name="quantidade" type="number" min="0" defaultValue="0" required /></label>
             <label>Imagem<input name="imagem" type="file" accept="image/png,image/jpeg,image/webp" /></label>
             <button type="submit" className="adminButton">Adicionar variação</button>
           </form>

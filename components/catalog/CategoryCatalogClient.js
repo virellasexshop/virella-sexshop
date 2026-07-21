@@ -22,7 +22,6 @@ export default function CategoryCatalogClient({ products, categoryName }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("todos");
   const [sort, setSort] = useState("recentes");
-  const [onlyAvailable, setOnlyAvailable] = useState(false);
 
   const visibleProducts = useMemo(() => {
     const term = normalize(search.trim());
@@ -33,9 +32,6 @@ export default function CategoryCatalogClient({ products, categoryName }) {
       );
 
       const matchesSearch = !term || searchable.includes(term);
-      const matchesAvailability =
-        !onlyAvailable || Number(product.quantidade || 0) > 0;
-
       let matchesFilter = true;
       if (filter === "novidades") matchesFilter = product.novo === true;
       if (filter === "ofertas") {
@@ -43,7 +39,7 @@ export default function CategoryCatalogClient({ products, categoryName }) {
       }
       if (filter === "mais-vendidos") matchesFilter = product.mais_vendido === true;
 
-      return matchesSearch && matchesAvailability && matchesFilter;
+      return matchesSearch && matchesFilter;
     });
 
     return [...filtered].sort((a, b) => {
@@ -58,13 +54,12 @@ export default function CategoryCatalogClient({ products, categoryName }) {
 
       return new Date(b.criado_em || 0) - new Date(a.criado_em || 0);
     });
-  }, [products, search, filter, sort, onlyAvailable]);
+  }, [products, search, filter, sort]);
 
   function clearFilters() {
     setSearch("");
     setFilter("todos");
     setSort("recentes");
-    setOnlyAvailable(false);
   }
 
   return (
@@ -124,15 +119,6 @@ export default function CategoryCatalogClient({ products, categoryName }) {
           ))}
         </div>
 
-        <label className="availabilityToggle">
-          <input
-            type="checkbox"
-            checked={onlyAvailable}
-            onChange={(event) => setOnlyAvailable(event.target.checked)}
-          />
-          <span aria-hidden="true" />
-          Somente disponíveis
-        </label>
       </div>
 
       <div className="categoryResultsLine" aria-live="polite">
