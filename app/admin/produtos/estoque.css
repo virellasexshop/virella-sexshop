@@ -1,0 +1,138 @@
+.adminTopDescription {
+  margin: 10px 0 0;
+  color: #938b84;
+  font-size: 14px;
+}
+
+.adminInventorySummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.adminInventorySummary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: #11100f;
+}
+
+.adminInventorySummary span {
+  color: #9f9790;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.adminInventorySummary strong {
+  color: #f3e9df;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.adminInventoryTableCard {
+  overflow-x: auto;
+}
+
+.adminInventoryTable {
+  min-width: 1250px;
+}
+
+.adminInlineForm,
+.adminStockForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminInlineForm select,
+.adminStockForm input {
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: #080808;
+  color: #fff;
+  outline: none;
+}
+
+.adminInlineForm select {
+  min-width: 190px;
+  padding: 0 34px 0 12px;
+}
+
+.adminStockForm input {
+  width: 74px;
+  padding: 0 10px;
+}
+
+.adminInlineForm select:focus,
+.adminStockForm input:focus {
+  border-color: #c7a27c;
+}
+
+.adminRowButton {
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(199, 162, 124, 0.35);
+  border-radius: 10px;
+  background: rgba(199, 162, 124, 0.08);
+  color: #e4c49f;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.adminRowButton:hover {
+  border-color: #c7a27c;
+  background: #c7a27c;
+  color: #090909;
+}
+
+.adminRowButton.danger {
+  border-color: rgba(224, 94, 94, 0.28);
+  background: rgba(224, 94, 94, 0.07);
+  color: #ec9898;
+}
+
+.adminRowButton.danger:hover {
+  border-color: #df6b6b;
+  background: #df6b6b;
+  color: #fff;
+}
+
+.statusButton {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.adminStockWarning {
+  display: block;
+  margin-top: 7px;
+  color: #ec9898 !important;
+  font-size: 11px !important;
+}
+
+.adminPriceCell {
+  color: #f3e9df !important;
+  white-space: nowrap;
+}
+
+.adminEmptyCell {
+  padding: 54px 22px !important;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .adminInventorySummary {
+    grid-template-columns: 1fr;
+  }
+}

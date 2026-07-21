@@ -1,0 +1,34 @@
+ATUALIZAÇÃO — CONTROLE DE ESTOQUE E EXCLUSÃO DE PRODUTOS
+
+1. Abra a pasta principal do projeto no VS Code.
+2. Extraia o ZIP sobre a pasta principal do projeto.
+3. Confirme a substituição dos arquivos page.js e actions.js.
+4. Os arquivos estoque.css e ProductDeleteButton.jsx são novos.
+
+ARQUIVOS E DESTINOS
+
+app/admin/produtos/page.js
+app/admin/produtos/actions.js
+app/admin/produtos/estoque.css
+components/admin/ProductDeleteButton.jsx
+
+O QUE FOI ADICIONADO
+
+- Campo para alterar a quantidade em estoque de cada produto.
+- Indicador para produtos sem estoque.
+- Resumo com produtos cadastrados, unidades disponíveis e itens zerados.
+- Botão no status para ativar ou desativar um produto.
+- Botão Excluir com confirmação antes da exclusão permanente.
+- Seletor de categoria mantido na tabela.
+
+PUBLICAR NA VERCEL
+
+git add .
+git commit -m "Adiciona controle de estoque e exclusao de produtos"
+git push
+
+OBSERVAÇÃO
+
+Desativar apenas esconde o produto e mantém seus dados. Excluir remove o
+registro permanentemente. Para produtos que já participaram de pedidos,
+prefira desativar para preservar o histórico.
