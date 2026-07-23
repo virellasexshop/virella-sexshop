@@ -5,15 +5,14 @@ export default function EditorialBanner() {
     <section className={styles.section}>
       <div className="container">
         <div className={styles.banner}>
-          <div>
+          <div className={styles.content}>
             <span className="kicker">Compra discreta</span>
             <h2>Embalagem neutra, pagamento seguro e atendimento reservado.</h2>
+            <p>
+              A experiência foi pensada para oferecer privacidade em cada etapa:
+              da escolha do produto até a entrega.
+            </p>
           </div>
-
-          <p>
-            A experiência foi pensada para oferecer privacidade em cada etapa:
-            da escolha do produto até a entrega.
-          </p>
         </div>
       </div>
     </section>
