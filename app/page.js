@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ProductGrid from "@/components/products/ProductGrid";
 import EditorialBanner from "@/components/home/EditorialBanner";
+import HomeBrandVisual from "@/components/home/HomeBrandVisual";
 import HomeCategories from "@/components/home/HomeCategories";
 import Newsletter from "@/components/home/Newsletter";
 import { getPublicCategories } from "@/modules/categories/category.service";
@@ -43,10 +44,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="homeHeroVisual">
-              <span>Curadoria Premium</span>
-              <h2>Intimidade tratada com elegância.</h2>
-            </div>
+            <HomeBrandVisual />
           </div>
         </section>
 

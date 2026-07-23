@@ -1,8 +1,10 @@
+import styles from "./EditorialBanner.module.css";
+
 export default function EditorialBanner() {
   return (
-    <section className="editorialBannerSection">
+    <section className={styles.section}>
       <div className="container">
-        <div className="editorialBanner">
+        <div className={styles.banner}>
           <div>
             <span className="kicker">Compra discreta</span>
             <h2>Embalagem neutra, pagamento seguro e atendimento reservado.</h2>

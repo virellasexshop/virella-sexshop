@@ -1,0 +1,25 @@
+ATUALIZAÇÃO VIRELLA — LOGO E EMBALAGEM NA PÁGINA INICIAL
+
+1. Faça um backup da pasta atual do projeto.
+2. Extraia este ZIP dentro da pasta principal do projeto.
+3. Confirme a substituição dos arquivos existentes.
+4. Envie para a Vercel:
+
+   git add .
+   git commit -m "Adicionar logo e imagem de embalagem na home"
+   git push
+
+O QUE MUDA
+
+- O cartão superior passa a exibir a marca “Virella Sexshop”.
+- A área “Embalagem neutra” recebe uma fotografia editorial de caixas
+  discretas, sem textos ou identificação do conteúdo.
+- Foram criados estilos separados apenas para esses dois blocos.
+- A composição se adapta a computador, tablet e celular.
+- A imagem foi otimizada em WEBP para não deixar a página pesada.
+
+NÃO É NECESSÁRIO
+
+- Executar SQL no Supabase.
+- Criar variável na Vercel.
+- Alterar app/globals.css.
