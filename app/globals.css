@@ -424,7 +424,7 @@ input {
 
 .footerGrid {
   display: grid;
-  grid-template-columns: 1.4fr 0.8fr 0.8fr 1fr;
+  grid-template-columns: 1.4fr 0.8fr 1fr;
   gap: 42px;
 }
 
@@ -455,6 +455,53 @@ input {
   color: var(--muted);
   margin-bottom: 11px;
   font-size: 14px;
+}
+
+.footerSocials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.footer .footerSocials a {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  place-items: center;
+  border: 1px solid rgba(201, 170, 137, 0.24);
+  border-radius: 50%;
+  background: rgba(201, 170, 137, 0.04);
+  color: var(--accent);
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.footer .footerSocials a:hover {
+  color: #f5eee7;
+  border-color: rgba(201, 170, 137, 0.62);
+  background: rgba(201, 170, 137, 0.11);
+  transform: translateY(-2px);
+}
+
+.footerSocials svg {
+  width: 19px;
+  height: 19px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.footerSocials .footerSocialDot {
+  fill: currentColor;
+  stroke: none;
 }
 
 .footerBottom {
