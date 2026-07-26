@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const SOCIAL_URL = "https://linktr.ee/virellasexshop";
+const SOCIAL_URL = "https://www.instagram.com/virella.intima/";
 
 function InstagramIcon() {
   return (
@@ -47,7 +47,7 @@ export default function Footer() {
             </a>
             <a
               href={SOCIAL_URL}
-              target="_blank"
+              target="https://w.app/8oozkx"
               rel="noopener noreferrer"
               aria-label="WhatsApp da Virella no Linktree"
               title="WhatsApp"
