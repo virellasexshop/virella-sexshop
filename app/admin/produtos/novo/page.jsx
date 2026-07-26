@@ -106,6 +106,31 @@ export default async function NovoProdutoPage() {
           </div>
 
           <div className="formCard">
+            <h2>Medidas para o frete</h2>
+            <p className="adminFormNotice">
+              Informe o produto já protegido para envio. Essas medidas deixam a cotação mais precisa.
+            </p>
+            <div className="formGrid">
+              <label>
+                Peso (kg)
+                <input name="peso_kg" required inputMode="decimal" defaultValue="0,30" />
+              </label>
+              <label>
+                Altura (cm)
+                <input name="altura_cm" required inputMode="decimal" defaultValue="8" />
+              </label>
+              <label>
+                Largura (cm)
+                <input name="largura_cm" required inputMode="decimal" defaultValue="12" />
+              </label>
+              <label>
+                Comprimento (cm)
+                <input name="comprimento_cm" required inputMode="decimal" defaultValue="18" />
+              </label>
+            </div>
+          </div>
+
+          <div className="formCard">
             <h2>SEO</h2>
             <label>
               Título para buscadores

@@ -21,6 +21,12 @@ export default function CheckoutClient() {
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState("");
+  const [sessionToken, setSessionToken] = useState("");
+  const [shippingOptions, setShippingOptions] = useState([]);
+  const [selectedShippingId, setSelectedShippingId] = useState("");
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [shippingError, setShippingError] = useState("");
+  const [quotedPostalCode, setQuotedPostalCode] = useState("");
   const [customer, setCustomer] = useState({
     nome: "", email: "", telefone: "", cep: "", rua: "", numero: "",
     complemento: "", bairro: "", cidade: "", estado: "",
@@ -39,6 +45,9 @@ export default function CheckoutClient() {
           router.replace("/login?redirect=%2Fcheckout");
           return;
         }
+        supabase.auth.getSession().then(({ data: sessionData }) => {
+          if (active) setSessionToken(sessionData.session?.access_token || "");
+        });
         setCustomer((current) => ({
           ...current,
           nome: data.user.user_metadata?.nome || "",
@@ -75,6 +84,52 @@ export default function CheckoutClient() {
   function updateField(event) {
     const { name, value } = event.target;
     setCustomer((current) => ({ ...current, [name]: value }));
+    if (name === "cep") {
+      setShippingOptions([]);
+      setSelectedShippingId("");
+      setShippingError("");
+      setQuotedPostalCode("");
+    }
+  }
+
+  async function calculateShipping() {
+    const postalCode = customer.cep.replace(/\D/g, "");
+    if (postalCode.length !== 8) {
+      setShippingError("Digite os 8 números do CEP.");
+      return;
+    }
+    if (!sessionToken) {
+      setShippingError("Sua sessão ainda está carregando. Tente novamente.");
+      return;
+    }
+
+    setShippingLoading(true);
+    setShippingError("");
+    setShippingOptions([]);
+    setSelectedShippingId("");
+
+    try {
+      const response = await fetch("/api/frete/cotacao", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionToken}`,
+        },
+        body: JSON.stringify({ items: cart, cep: postalCode }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+
+      setShippingOptions(result.opcoes || []);
+      setQuotedPostalCode(postalCode);
+      if (result.opcoes?.length) setSelectedShippingId(result.opcoes[0].id);
+    } catch (shippingCalculationError) {
+      setShippingError(
+        shippingCalculationError.message || "Não foi possível calcular o frete."
+      );
+    } finally {
+      setShippingLoading(false);
+    }
   }
 
   async function startPayment(event) {
@@ -96,7 +151,11 @@ export default function CheckoutClient() {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ items: cart, customer }),
+        body: JSON.stringify({
+          items: cart,
+          customer,
+          shipping_service_id: selectedShippingId,
+        }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
@@ -118,6 +177,15 @@ export default function CheckoutClient() {
       </section>
     );
   }
+
+  const selectedShipping = shippingOptions.find(
+    (option) => option.id === selectedShippingId
+  );
+  const currentPostalCode = customer.cep.replace(/\D/g, "");
+  const shippingIsCurrent = quotedPostalCode === currentPostalCode;
+  const orderTotal = Number(summary?.subtotal || 0) + Number(
+    shippingIsCurrent ? selectedShipping?.preco || 0 : 0
+  );
 
   return (
     <section className={styles.page}>
@@ -150,6 +218,58 @@ export default function CheckoutClient() {
               <label>Estado<select name="estado" value={customer.estado} onChange={updateField} autoComplete="address-level1" required><option value="">UF</option>{STATES.map((state) => <option key={state}>{state}</option>)}</select></label>
             </div>
           </div>
+
+          <div className={styles.formCard}>
+            <div className={styles.cardHeading}><span>03</span><h2>Forma de entrega</h2></div>
+            <div className={styles.shippingCalculator}>
+              <div>
+                <strong>Calcule pelo CEP informado acima</strong>
+                <p>Veja preços e prazos disponíveis para o seu endereço.</p>
+              </div>
+              <button type="button" onClick={calculateShipping} disabled={shippingLoading}>
+                {shippingLoading ? "Calculando..." : "Calcular frete"}
+              </button>
+            </div>
+
+            {shippingError && <p className={styles.shippingError}>{shippingError}</p>}
+
+            {shippingOptions.length > 0 && shippingIsCurrent && (
+              <div className={styles.shippingOptions}>
+                {shippingOptions.map((option) => (
+                  <label
+                    key={option.id}
+                    className={`${styles.shippingOption} ${
+                      selectedShippingId === option.id ? styles.shippingOptionSelected : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="shipping_service"
+                      value={option.id}
+                      checked={selectedShippingId === option.id}
+                      onChange={() => setSelectedShippingId(option.id)}
+                    />
+                    {option.logo_url ? (
+                      <img src={option.logo_url} alt="" />
+                    ) : (
+                      <span className={styles.shippingIcon}>V</span>
+                    )}
+                    <span className={styles.shippingDescription}>
+                      <strong>{option.transportadora} — {option.servico}</strong>
+                      <small>
+                        {option.prazo_dias
+                          ? `Prazo estimado: até ${option.prazo_dias} dias úteis`
+                          : "Prazo informado pela transportadora"}
+                      </small>
+                    </span>
+                    <strong className={option.gratuito ? styles.freeShipping : ""}>
+                      {option.gratuito ? "Grátis" : money(option.preco)}
+                    </strong>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <aside className={styles.summary}>
@@ -171,13 +291,26 @@ export default function CheckoutClient() {
           </div>
           <div className={styles.totals}>
             <div><span>Subtotal</span><strong>{money(summary?.subtotal)}</strong></div>
-            <div><span>Entrega</span><strong>{summary?.frete ? money(summary.frete) : "Grátis"}</strong></div>
-            <div className={styles.total}><span>Total</span><strong>{money(summary?.total)}</strong></div>
+            <div>
+              <span>Entrega</span>
+              <strong>
+                {selectedShipping && shippingIsCurrent
+                  ? selectedShipping.gratuito ? "Grátis" : money(selectedShipping.preco)
+                  : "A calcular"}
+              </strong>
+            </div>
+            <div className={styles.total}><span>Total</span><strong>{money(orderTotal)}</strong></div>
           </div>
           {error && <p className={styles.error}>{error}</p>}
-          <button type="submit" disabled={paying || !summary}>
+          <button
+            type="submit"
+            disabled={paying || !summary || !selectedShipping || !shippingIsCurrent}
+          >
             {paying ? "Abrindo Mercado Pago..." : "Pagar com Mercado Pago"}
           </button>
+          {!selectedShipping && (
+            <p className={styles.shippingHint}>Calcule e escolha uma forma de entrega para continuar.</p>
+          )}
           <p className={styles.secure}>Pagamento processado pelo Mercado Pago. A Virella não recebe os dados do seu cartão.</p>
           <Link href="/carrinho" className={styles.back}>← Voltar ao carrinho</Link>
         </aside>

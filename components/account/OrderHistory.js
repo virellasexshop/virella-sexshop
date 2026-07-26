@@ -35,6 +35,11 @@ export default function OrderHistory() {
           <article key={order.id} className={styles.order}>
             <header><div><span>Pedido</span><strong>#{order.numero}</strong></div><div><span>Data</span><strong>{date(order.criado_em)}</strong></div><div><span>Total</span><strong>{money(order.total)}</strong></div></header>
             <div className={styles.statusLine}><span className={`${styles.badge} ${order.status_pagamento === "aprovado" ? styles.approved : ""}`}>{PAYMENT_LABEL[order.status_pagamento] || order.status_pagamento}</span><span>{ORDER_LABEL[order.status_pedido] || order.status_pedido}</span></div>
+            <p className={styles.shipping}>
+              Entrega: {order.frete_transportadora || "Transportadora"} — {order.frete_servico_nome || "serviço escolhido"}
+              {order.frete_prazo_dias ? ` · até ${order.frete_prazo_dias} dias úteis` : ""}
+              {order.frete_gratis ? " · grátis" : ` · ${money(order.frete)}`}
+            </p>
             <ul>{(order.pedido_itens || []).map((item, index) => <li key={`${item.nome}-${index}`}><span>{item.quantidade}×</span> {item.nome}</li>)}</ul>
           </article>
         ))}</div>

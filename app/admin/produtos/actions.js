@@ -43,6 +43,14 @@ function toNumber(value) {
   return Number(String(value).replace(",", "."));
 }
 
+function positiveNumber(value, fieldName) {
+  const number = toNumber(value);
+  if (!Number.isFinite(number) || number <= 0) {
+    throw new Error(`Informe ${fieldName} com um valor maior que zero.`);
+  }
+  return number;
+}
+
 function getProductId(formData) {
   const id = String(formData.get("produto_id") || "").trim();
 
@@ -111,6 +119,19 @@ export async function toggleProductStatusAction(formData) {
   const ativo = String(formData.get("ativo")) === "true";
 
   await updateProduct(id, { ativo: !ativo });
+  revalidateProducts();
+}
+
+export async function updateProductShippingAction(formData) {
+  await requireAdmin();
+  const id = getProductId(formData);
+
+  await updateProduct(id, {
+    peso_kg: positiveNumber(formData.get("peso_kg"), "o peso"),
+    altura_cm: positiveNumber(formData.get("altura_cm"), "a altura"),
+    largura_cm: positiveNumber(formData.get("largura_cm"), "a largura"),
+    comprimento_cm: positiveNumber(formData.get("comprimento_cm"), "o comprimento"),
+  });
   revalidateProducts();
 }
 
@@ -275,6 +296,10 @@ export async function createProductAction(formData) {
     promocao: formData.get("promocao") === "on",
     novo: formData.get("novo") === "on",
     mais_vendido: formData.get("mais_vendido") === "on",
+    peso_kg: positiveNumber(formData.get("peso_kg"), "o peso"),
+    altura_cm: positiveNumber(formData.get("altura_cm"), "a altura"),
+    largura_cm: positiveNumber(formData.get("largura_cm"), "a largura"),
+    comprimento_cm: positiveNumber(formData.get("comprimento_cm"), "o comprimento"),
   };
 
   const createdProduct = await createProduct(produto);

@@ -11,6 +11,7 @@
 .body h3 { margin: 0 0 12px; }
 .body ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; color: #bbb2aa; font-size: 12px; }
 .body p { margin: 0; color: #9c948d; font-size: 12px; line-height: 1.7; }
+.body .shippingService { color: #d3b08c; font-weight: 550; }
 .body form { display: grid; gap: 10px; align-content: start; }
 .body form label { display: grid; gap: 8px; }
 .body select { width: 100%; height: 42px; padding: 0 10px; border: 1px solid rgba(255,255,255,.1); background: #090909; color: #e5ddd7; }

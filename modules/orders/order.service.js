@@ -20,6 +20,12 @@ export async function createOrder({ userId, customer, checkout }) {
       endereco_estado: customer.estado,
       subtotal: checkout.subtotal,
       frete: checkout.frete,
+      frete_servico_id: checkout.frete_selecionado.id,
+      frete_servico_nome: checkout.frete_selecionado.servico,
+      frete_transportadora: checkout.frete_selecionado.transportadora,
+      frete_prazo_dias: checkout.frete_selecionado.prazo_dias,
+      frete_preco_original: checkout.frete_selecionado.preco_original,
+      frete_gratis: checkout.frete_selecionado.gratuito,
       total: checkout.total,
     })
     .select()
@@ -28,7 +34,17 @@ export async function createOrder({ userId, customer, checkout }) {
   if (orderError) throw orderError;
 
   const { error: itemsError } = await supabase.from("pedido_itens").insert(
-    checkout.items.map((item) => ({ ...item, pedido_id: order.id }))
+    checkout.items.map((item) => ({
+      pedido_id: order.id,
+      produto_id: item.produto_id,
+      variacao_id: item.variacao_id,
+      variacao_nome: item.variacao_nome,
+      nome: item.nome,
+      imagem_url: item.imagem_url,
+      quantidade: item.quantidade,
+      preco_unitario: item.preco_unitario,
+      total: item.total,
+    }))
   );
 
   if (itemsError) {
@@ -114,7 +130,7 @@ export async function getCustomerOrders(userId) {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("pedidos")
-    .select("id,numero,status_pedido,status_pagamento,total,criado_em,pago_em,pedido_itens(nome,quantidade,preco_unitario,imagem_url)")
+    .select("id,numero,status_pedido,status_pagamento,total,frete,frete_servico_nome,frete_transportadora,frete_prazo_dias,frete_gratis,criado_em,pago_em,pedido_itens(nome,quantidade,preco_unitario,imagem_url)")
     .eq("usuario_id", userId)
     .order("criado_em", { ascending: false });
   if (error) throw error;

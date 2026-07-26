@@ -1,0 +1,126 @@
+FRETE DINÂMICO — MELHOR ENVIO
+================================
+
+O QUE ESTA ATUALIZAÇÃO FAZ
+
+- Retira o frete fixo do checkout.
+- Calcula opções reais pelo CEP no Melhor Envio.
+- Mostra transportadora, serviço, preço e prazo.
+- Obriga o cliente a escolher uma entrega antes do pagamento.
+- Recalcula o preço no servidor para impedir adulteração no navegador.
+- Mantém frete grátis acima de R$ 299 na opção mais barata.
+- Guarda a entrega escolhida no pedido e mostra no admin e na conta do cliente.
+- Permite editar peso e medidas de cada produto no admin.
+
+
+1. COPIAR OS ARQUIVOS
+
+Copie as pastas e os arquivos desta atualização para a raiz do projeto.
+Quando o Windows perguntar, confirme "Substituir os arquivos no destino".
+
+
+2. EXECUTAR O SQL
+
+No Supabase:
+
+SQL Editor > New query
+
+Abra o arquivo:
+
+supabase/frete-melhor-envio.sql
+
+Copie todo o conteúdo, cole no SQL Editor e clique em Run.
+O resultado final deve mostrar:
+
+Frete Melhor Envio instalado
+
+
+3. VARIÁVEIS NA VERCEL
+
+Abra:
+
+Vercel > projeto > Settings > Environment Variables
+
+Cadastre para Production e Preview:
+
+MELHOR_ENVIO_TOKEN
+Valor: o token de produção da sua conta Melhor Envio.
+
+MELHOR_ENVIO_CEP_ORIGEM
+Valor: o CEP de onde os pedidos serão enviados, somente números.
+Exemplo: 01001000
+
+MELHOR_ENVIO_USER_AGENT
+Valor: Virella Sexshop (seu-email-de-suporte@dominio.com)
+Use um e-mail verdadeiro de contato técnico.
+
+MELHOR_ENVIO_AMBIENTE
+Valor: production
+
+VIRELLA_FRETE_GRATIS_ACIMA
+Valor: 299
+
+Opcional:
+
+MELHOR_ENVIO_SERVICOS
+Valor: IDs dos serviços separados por vírgula.
+Deixe esta variável sem cadastrar para mostrar todos os serviços disponíveis
+e habilitados na sua conta.
+
+IMPORTANTE:
+
+- Não use NEXT_PUBLIC_ no token.
+- Não envie o token por WhatsApp, e-mail ou conversa.
+- Se ainda existir VIRELLA_FRETE_FIXO na Vercel, ela pode ser excluída.
+- Tokens OAuth do Melhor Envio expiram. Se as cotações começarem a informar
+  token inválido, gere/renove o token e atualize MELHOR_ENVIO_TOKEN na Vercel.
+
+
+4. ENVIAR PARA A VERCEL
+
+No terminal do VS Code, dentro da pasta do projeto:
+
+git add .
+git commit -m "Adiciona frete dinamico com Melhor Envio"
+git push
+
+A Vercel fará o deploy automaticamente.
+
+
+5. AJUSTAR MEDIDAS DOS PRODUTOS
+
+Os produtos que já existiam começam com:
+
+- Peso: 0,30 kg
+- Altura: 8 cm
+- Largura: 12 cm
+- Comprimento: 18 cm
+
+Para deixar a cotação precisa:
+
+Admin > Produtos > clique no produto > Medidas para cotação
+
+Informe as medidas do produto já protegido para envio.
+Novos produtos já possuem esses campos no formulário.
+
+
+6. TESTE FINAL
+
+1. Entre em uma conta de cliente.
+2. Adicione um produto ao carrinho.
+3. Abra o checkout.
+4. Digite um CEP válido.
+5. Clique em "Calcular frete".
+6. Escolha uma opção.
+7. Confira se o total muda.
+8. Faça um pedido de teste.
+9. Confira a transportadora e o prazo em Admin > Pedidos.
+10. Teste um carrinho com subtotal igual ou maior que R$ 299.
+
+
+OBSERVAÇÃO
+
+Esta versão calcula e cobra o frete corretamente. Ela ainda não compra nem
+imprime automaticamente a etiqueta no Melhor Envio. A compra da etiqueta deve
+ser feita depois do pagamento, pelo painel do Melhor Envio. A automação da
+etiqueta pode ser adicionada em uma próxima etapa.

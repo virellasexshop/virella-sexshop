@@ -10,6 +10,7 @@ import {
   deleteVariationAction,
   updateVariationAction,
   updateMainOptionAction,
+  updateProductShippingAction,
 } from "../actions";
 import styles from "./produto.module.css";
 
@@ -58,6 +59,36 @@ export default async function ManageProductPage({ params }) {
             </p>
           </section>
         )}
+
+        <section className={styles.card}>
+          <header>
+            <div><span>Entrega</span><h2>Medidas para cotação</h2></div>
+          </header>
+          <form action={updateProductShippingAction} className={styles.shippingForm}>
+            <input type="hidden" name="produto_id" value={product.id} />
+            <label>
+              Peso (kg)
+              <input name="peso_kg" inputMode="decimal" defaultValue={product.peso_kg ?? 0.3} required />
+            </label>
+            <label>
+              Altura (cm)
+              <input name="altura_cm" inputMode="decimal" defaultValue={product.altura_cm ?? 8} required />
+            </label>
+            <label>
+              Largura (cm)
+              <input name="largura_cm" inputMode="decimal" defaultValue={product.largura_cm ?? 12} required />
+            </label>
+            <label>
+              Comprimento (cm)
+              <input name="comprimento_cm" inputMode="decimal" defaultValue={product.comprimento_cm ?? 18} required />
+            </label>
+            <button type="submit" className="adminButton">Salvar medidas</button>
+          </form>
+          <p className={styles.mainOptionHint}>
+            Use as medidas do produto já protegido para envio. Para os produtos antigos,
+            o sistema começa com 0,30 kg e 8 × 12 × 18 cm.
+          </p>
+        </section>
 
         <section className={styles.card}>
           <header><div><span>Galeria</span><h2>Fotos adicionais</h2></div></header>

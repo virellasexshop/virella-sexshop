@@ -12,6 +12,7 @@
 .statusLine { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.07); color: #aaa19a; font-size: 11px; }
 .badge { padding: 7px 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; }
 .approved { border-color: rgba(107,171,116,.3); color: #9bc4a0; background: rgba(107,171,116,.07); }
+.shipping { margin: 14px 0 0; color: #a99f97; font-size: 11px; line-height: 1.5; }
 .order ul { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 18px 0 0; padding: 0; list-style: none; color: #837c76; font-size: 11px; }
 .order li span { color: #b99d81; }
 .empty, .message { padding: 42px; border: 1px solid rgba(255,255,255,.08); background: #11100f; color: #8e867f; }

@@ -27,6 +27,9 @@
 .deleteButton { padding: 10px; border: 1px solid rgba(219,91,91,.25); border-radius: 10px; background: rgba(219,91,91,.06); color: #e19292; cursor: pointer; }
 .empty { color: #918981; }
 .newVariation { display: grid; grid-template-columns: 1.3fr 1fr 1fr .7fr 1.2fr auto; align-items: end; gap: 12px; }
+.shippingForm { display: grid; grid-template-columns: repeat(4,minmax(110px,1fr)) auto; align-items: end; gap: 12px; }
+.shippingForm label { display: grid; gap: 6px; color: #989088; font-size: 11px; }
+.shippingForm input { min-width: 0; height: 42px; padding: 0 11px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: #060606; color: #fff; }
 
-@media (max-width: 1200px) { .variation { grid-template-columns: 60px 1fr; } .variationForm { grid-template-columns: repeat(2,minmax(0,1fr)); } .deleteButton { grid-column: 2; } .newVariation { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-@media (max-width: 650px) { .card { padding: 18px; } .mainOptionGrid,.mainOptionForm { grid-template-columns: 1fr; } .addMediaForm { align-items: stretch; flex-direction: column; } .variation { grid-template-columns: 1fr; } .variationForm,.newVariation { grid-template-columns: 1fr; } .deleteButton { grid-column: auto; } }
+@media (max-width: 1200px) { .variation { grid-template-columns: 60px 1fr; } .variationForm { grid-template-columns: repeat(2,minmax(0,1fr)); } .deleteButton { grid-column: 2; } .newVariation { grid-template-columns: repeat(2,minmax(0,1fr)); } .shippingForm { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 650px) { .card { padding: 18px; } .mainOptionGrid,.mainOptionForm { grid-template-columns: 1fr; } .addMediaForm { align-items: stretch; flex-direction: column; } .variation { grid-template-columns: 1fr; } .variationForm,.newVariation,.shippingForm { grid-template-columns: 1fr; } .deleteButton { grid-column: auto; } }

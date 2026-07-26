@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { calculateCheckout, validateCustomer } from "@/lib/checkout";
 import { createPaymentPreference } from "@/lib/mercadopago";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { applyShipping, quoteShipping } from "@/lib/melhor-envio";
 import {
   createOrder,
   markOrderError,
@@ -32,11 +33,23 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const [checkout, user] = await Promise.all([
+    const [baseCheckout, user] = await Promise.all([
       calculateCheckout(body?.items),
       requiredUser(request),
     ]);
     const customer = validateCustomer(body?.customer);
+    const shippingQuotes = await quoteShipping({
+      items: baseCheckout.items,
+      subtotal: baseCheckout.subtotal,
+      destinationPostalCode: customer.cep,
+    });
+    const selectedShipping = shippingQuotes.opcoes.find(
+      (option) => option.id === String(body?.shipping_service_id || "")
+    );
+    if (!selectedShipping) {
+      throw new Error("Escolha novamente uma opção de entrega.");
+    }
+    const checkout = applyShipping(baseCheckout, selectedShipping);
 
     order = await createOrder({ userId: user.id, customer, checkout });
     const preference = await createPaymentPreference({
