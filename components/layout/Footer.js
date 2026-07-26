@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-const SOCIAL_URL = "https://www.instagram.com/virella.intima/";
+const INSTAGRAM_URL = "https://www.instagram.com/virella.intima/";
+const WHATSAPP_URL = "https://w.app/8oozkx";
 
 function InstagramIcon() {
   return (
@@ -37,19 +38,19 @@ export default function Footer() {
 
           <div className="footerSocials" aria-label="Redes sociais da Virella">
             <a
-              href={SOCIAL_URL}
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram da Virella no Linktree"
+              aria-label="Instagram da Virella"
               title="Instagram"
             >
               <InstagramIcon />
             </a>
             <a
-              href={SOCIAL_URL}
-              target="https://w.app/8oozkx"
+              href={WHATSAPP_URL}
+              target="_blank"
               rel="noopener noreferrer"
-              aria-label="WhatsApp da Virella no Linktree"
+              aria-label="WhatsApp da Virella"
               title="WhatsApp"
             >
               <WhatsAppIcon />
