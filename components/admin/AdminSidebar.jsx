@@ -17,6 +17,7 @@ export default function AdminSidebar() {
         <Link href="/admin/categorias">Categorias</Link>
         <Link href="/admin/promocoes">Promoções</Link>
         <Link href="/admin/pedidos">Pedidos</Link>
+        <Link href="/admin/avaliacoes">Avaliações</Link>
       </nav>
 
       <Link href="/" className="adminStoreLink">

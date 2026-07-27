@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import ProductReviews from "@/components/reviews/ProductReviews";
 import styles from "./ProductDetailsClient.module.css";
 
 function money(value) {
@@ -11,7 +12,7 @@ function money(value) {
   });
 }
 
-export default function ProductDetailsClient({ product }) {
+export default function ProductDetailsClient({ product, reviews = [], reviewSummary }) {
   const alternatives = (product.produto_variacoes || []).filter(
     (variation) => variation.ativo !== false
   );
@@ -94,6 +95,16 @@ export default function ProductDetailsClient({ product }) {
           {product.descricao_curta || "Uma escolha sofisticada para transformar seus momentos com conforto e discrição."}
         </p>
 
+        {reviewSummary?.total > 0 && (
+          <a href="#avaliacoes" className={styles.ratingPreview}>
+            <span aria-hidden="true">★★★★★</span>
+            <strong>{Number(reviewSummary.average).toFixed(1).replace(".", ",")}</strong>
+            <small>
+              {reviewSummary.total} {reviewSummary.total === 1 ? "avaliação" : "avaliações"} verificadas
+            </small>
+          </a>
+        )}
+
         {onSale && <span className={styles.discount}>{discount}% de desconto</span>}
         <div className={styles.price}>{money(currentPrice)}</div>
         {onSale && <span className={styles.oldPrice}>De {money(originalPrice)}</span>}
@@ -142,6 +153,13 @@ export default function ProductDetailsClient({ product }) {
           </div>
         )}
       </section>
+
+      <ProductReviews
+        productId={product.id}
+        productSlug={product.slug || product.id}
+        reviews={reviews}
+        summary={reviewSummary}
+      />
     </main>
   );
 }

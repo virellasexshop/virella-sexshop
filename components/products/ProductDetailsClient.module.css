@@ -11,6 +11,10 @@
 .details { align-self: start; padding-top: 24px; }
 .details h1 { margin: 13px 0 18px; color: #f6efe8; font-size: clamp(42px,5.2vw,76px); font-weight: 450; line-height: .98; letter-spacing: -.055em; }
 .lead { max-width: 600px; color: #a59c94; font-size: 16px; line-height: 1.75; }
+.ratingPreview { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 13px; color: #c7a27c; }
+.ratingPreview > span { letter-spacing: .08em; }
+.ratingPreview strong { color: #f5ece3; font-size: 13px; }
+.ratingPreview small { color: #8f877f; font-size: 12px; }
 .discount { display: inline-flex; margin-top: 20px; padding: 7px 10px; border-radius: 999px; color: #dcb88f; background: rgba(199,162,124,.1); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; }
 .price { margin-top: 22px; color: #fff7ef; font-size: 34px; }
 .oldPrice { display: block; margin-top: 5px; color: #817970; text-decoration: line-through; }
