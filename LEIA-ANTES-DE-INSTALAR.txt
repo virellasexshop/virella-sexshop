@@ -1,0 +1,22 @@
+ATUALIZAÇÃO DO ÍCONE DA ABA — VIRELLA SEXSHOP
+
+1. Abra a pasta do seu projeto no VS Code.
+2. Copie a pasta "app" deste pacote.
+3. Cole por cima da pasta "app" existente no seu projeto.
+4. Confirme a substituição/mesclagem, se o Windows perguntar.
+
+O único arquivo novo é:
+
+app/icon.svg
+
+Ele coloca o "V" dourado da identidade Virella no lugar do ícone de planeta.
+Nenhum arquivo de pagamento, produto, frete ou banco de dados é alterado.
+
+Depois envie para a Vercel:
+
+git add app/icon.svg
+git commit -m "Adiciona favicon da Virella"
+git push
+
+Se o ícone antigo continuar aparecendo, faça Ctrl + F5 ou abra uma janela
+anônima, pois o navegador costuma manter o favicon em cache.
