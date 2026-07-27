@@ -1,4 +1,5 @@
 import ProductCard from "./ProductCard";
+import gridStyles from "./MobileProductGrid.module.css";
 
 export default function ProductGrid({ title, subtitle, products }) {
   return (
@@ -13,7 +14,7 @@ export default function ProductGrid({ title, subtitle, products }) {
           <p>{subtitle}</p>
         </div>
 
-        <div className="productGrid">
+        <div className={`productGrid ${gridStyles.grid}`}>
           {products.map((product) => (
             <ProductCard product={product} key={product.id || product.slug} />
           ))}

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ProductCard from "@/components/products/ProductCard";
+import gridStyles from "@/components/products/MobileProductGrid.module.css";
 
 export default function CatalogClient({ products, categories }) {
   const [category, setCategory] = useState("todas");
@@ -61,7 +62,7 @@ export default function CatalogClient({ products, categories }) {
       </div>
 
       {visibleProducts.length > 0 ? (
-        <div className="catalogGrid">
+        <div className={`catalogGrid ${gridStyles.grid}`}>
           {visibleProducts.map((product) => <ProductCard key={product.id} product={product} />)}
         </div>
       ) : (

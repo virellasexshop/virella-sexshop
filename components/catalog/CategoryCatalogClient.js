@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/products/ProductCard";
+import gridStyles from "@/components/products/MobileProductGrid.module.css";
 
 const filters = [
   { value: "todos", label: "Todos" },
@@ -129,7 +130,7 @@ export default function CategoryCatalogClient({ products, categoryName }) {
       </div>
 
       {visibleProducts.length > 0 ? (
-        <div className="categoryProductGrid">
+        <div className={`categoryProductGrid ${gridStyles.grid}`}>
           {visibleProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
