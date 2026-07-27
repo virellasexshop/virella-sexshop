@@ -23,7 +23,7 @@ export default function HomeReviews({ reviews = [] }) {
             <h2>Quem compra, recomenda.</h2>
           </div>
           <p>
-            Avaliações publicadas por clientes que concluíram uma compra na Virella.
+            Experiências reais enviadas por clientes, com a origem identificada em cada depoimento.
           </p>
         </div>
 
@@ -35,11 +35,15 @@ export default function HomeReviews({ reviews = [] }) {
               <footer>
                 <div>
                   <strong>{review.nome_exibicao}</strong>
-                  {review.compra_verificada && <span>Compra verificada</span>}
+                  {review.compra_verificada ? (
+                    <span>Compra verificada</span>
+                  ) : review.origem === "loja" ? (
+                    <span>Depoimento recebido pela loja</span>
+                  ) : null}
                 </div>
                 {review.produtos?.slug && (
                   <Link href={`/produto/${review.produtos.slug}`}>
-                    {review.produtos.nome} ↗
+                    {review.produto_nome_snapshot || review.produtos.nome} ↗
                   </Link>
                 )}
               </footer>

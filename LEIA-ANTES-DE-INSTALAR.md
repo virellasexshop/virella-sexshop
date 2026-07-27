@@ -7,6 +7,7 @@ Esta atualização adiciona:
 - avaliações reais, vinculadas a compras com pagamento aprovado;
 - avaliações recentes na página inicial;
 - moderação de avaliações no painel administrativo;
+- cadastro manual de depoimentos reais recebidos pela loja;
 - bloco de confiança com WhatsApp, Instagram e políticas;
 - páginas de contato, privacidade, entrega, trocas e devoluções.
 
@@ -29,7 +30,8 @@ No Supabase:
 4. Copie todo o conteúdo.
 5. Cole no SQL Editor e clique em **Run**.
 
-O arquivo deve ser executado somente uma vez.
+Se você já executou uma versão anterior desse arquivo, execute novamente. Ele
+atualiza a tabela existente sem apagar as avaliações já cadastradas.
 
 ## 3. Informar CNPJ e razão social
 
@@ -68,7 +70,10 @@ automaticamente.
 - Cada cliente possui uma avaliação por produto.
 - Se enviar novamente, a avaliação anterior é atualizada.
 - No painel, acesse `/admin/avaliacoes` para ocultar, exibir ou excluir.
-- A página inicial mostra somente avaliações verificadas e visíveis.
+- No mesmo painel, você pode cadastrar um depoimento real recebido fora do site.
+- Depoimentos inseridos manualmente aparecem como “Depoimento recebido pela loja”.
+- Apenas avaliações ligadas a pedidos pagos aparecem como “Compra verificada”.
+- A página inicial mostra as avaliações e os depoimentos visíveis mais recentes.
 
 ## Canais configurados
 

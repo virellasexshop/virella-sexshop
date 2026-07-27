@@ -123,7 +123,11 @@ export default function ProductReviews({
               <p>“{review.comentario}”</p>
               <footer>
                 <strong>{review.nome_exibicao}</strong>
-                {review.compra_verificada && <span>✓ Compra verificada</span>}
+                {review.compra_verificada ? (
+                  <span>✓ Compra verificada</span>
+                ) : review.origem === "loja" ? (
+                  <span>Depoimento recebido pela loja</span>
+                ) : null}
               </footer>
             </article>
           )) : (

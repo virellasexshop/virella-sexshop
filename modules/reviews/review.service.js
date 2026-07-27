@@ -20,7 +20,7 @@ export async function getProductReviews(productId) {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("avaliacoes")
-    .select("id,nota,comentario,nome_exibicao,compra_verificada,criado_em")
+    .select("id,nota,comentario,nome_exibicao,compra_verificada,origem,criado_em")
     .eq("produto_id", productId)
     .eq("ativo", true)
     .order("criado_em", { ascending: false });
@@ -35,9 +35,8 @@ export async function getLatestReviews(limit = 3) {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("avaliacoes")
-    .select("id,nota,comentario,nome_exibicao,compra_verificada,criado_em,produtos(nome,slug)")
+    .select("id,nota,comentario,nome_exibicao,compra_verificada,origem,produto_nome_snapshot,produto_preco_snapshot,criado_em,produtos(nome,slug)")
     .eq("ativo", true)
-    .eq("compra_verificada", true)
     .order("criado_em", { ascending: false })
     .limit(limit);
 
@@ -49,7 +48,7 @@ export async function getAdminReviews() {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("avaliacoes")
-    .select("id,nota,comentario,nome_exibicao,compra_verificada,ativo,criado_em,produtos(nome,slug)")
+    .select("id,nota,comentario,nome_exibicao,compra_verificada,origem,produto_nome_snapshot,produto_preco_snapshot,ativo,criado_em,produtos(nome,slug)")
     .order("criado_em", { ascending: false });
 
   if (error) return [];
@@ -68,5 +67,28 @@ export async function setReviewVisibility(id, active) {
 export async function deleteReview(id) {
   const supabase = createSupabaseAdminClient();
   const { error } = await supabase.from("avaliacoes").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function createManualReview({
+  product,
+  displayName,
+  rating,
+  comment,
+}) {
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase.from("avaliacoes").insert({
+    produto_id: product.id,
+    usuario_id: null,
+    nome_exibicao: displayName,
+    nota: rating,
+    comentario: comment,
+    origem: "loja",
+    compra_verificada: false,
+    produto_nome_snapshot: product.nome,
+    produto_preco_snapshot: product.preco_final ?? product.preco,
+    ativo: true,
+  });
+
   if (error) throw error;
 }

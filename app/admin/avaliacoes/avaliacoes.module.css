@@ -3,6 +3,125 @@
   font-size: 13px;
 }
 
+.success,
+.error {
+  margin: -10px 0 22px;
+  padding: 13px 16px;
+  border: 1px solid rgba(121, 190, 139, 0.25);
+  border-radius: 13px;
+  color: #a8d7b4;
+  background: rgba(86, 155, 103, 0.08);
+  font-size: 12px;
+}
+
+.error {
+  border-color: rgba(220, 100, 100, 0.25);
+  color: #e0a1a1;
+  background: rgba(180, 70, 70, 0.08);
+}
+
+.createPanel {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.65fr) minmax(0, 1fr);
+  gap: 34px;
+  margin-bottom: 28px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 0 0, rgba(199, 162, 124, 0.1), transparent 32%),
+    var(--surface);
+}
+
+.createIntro > span {
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.createIntro h2 {
+  margin: 12px 0;
+  color: var(--text);
+  font-size: 29px;
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+
+.createIntro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.createForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  gap: 16px;
+}
+
+.createForm label {
+  display: block;
+}
+
+.createForm label > span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.createForm input,
+.createForm select,
+.createForm textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline: 0;
+  color: var(--text);
+  background: #080807;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.createForm input:focus,
+.createForm select:focus,
+.createForm textarea:focus {
+  border-color: rgba(199, 162, 124, 0.65);
+}
+
+.fullField {
+  grid-column: 1 / -1;
+}
+
+.createActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.createActions small {
+  max-width: 450px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.createActions button {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  color: #090807;
+  background: var(--text);
+  padding: 13px 18px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
 .list {
   display: grid;
   gap: 14px;
@@ -87,6 +206,20 @@
 }
 
 @media (max-width: 620px) {
+  .createPanel,
+  .createForm {
+    grid-template-columns: 1fr;
+  }
+
+  .fullField {
+    grid-column: auto;
+  }
+
+  .createActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .footer {
     align-items: flex-start;
     flex-direction: column;
