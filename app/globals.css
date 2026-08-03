@@ -2726,11 +2726,26 @@ input {
   }
 
   .categoryProductGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 10px;
   }
 
   .categoryProductGrid .productImagePremium {
-    min-height: 470px;
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .categoryProductGrid .productContentPremium {
+    padding: 12px 10px 14px;
+  }
+
+  .categoryProductGrid .productContentPremium h3 {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .categoryProductGrid .productBuyRow {
+    gap: 8px;
   }
 }
 
