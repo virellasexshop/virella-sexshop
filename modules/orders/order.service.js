@@ -141,7 +141,7 @@ export async function getAdminOrders() {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("pedidos")
-    .select("*,pedido_itens(nome,quantidade)")
+    .select("*,pedido_itens(nome,variacao_nome,quantidade,preco_unitario,total,imagem_url)")
     .order("criado_em", { ascending: false });
   if (error) throw error;
   return data || [];

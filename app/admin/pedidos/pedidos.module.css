@@ -18,3 +18,31 @@
 .body button { height: 40px; border: 0; background: #eee8e2; color: #090909; cursor: pointer; }
 @media (max-width: 900px) { .card header { grid-template-columns: 1fr 1fr; } .body { grid-template-columns: 1fr; } }
 @media (max-width: 540px) { .card header { grid-template-columns: 1fr; } }
+
+.filters { display: flex; align-items: end; flex-wrap: wrap; gap: 14px; margin: 0 0 18px; padding: 16px; border: 1px solid rgba(255,255,255,.09); background: #11100f; }
+.filterButtons { display: flex; flex-wrap: wrap; gap: 8px; }
+.filterButtons button { min-height: 38px; padding: 0 16px; border: 1px solid rgba(255,255,255,.12); background: #090909; color: #aaa19a; cursor: pointer; }
+.filterButtons button:hover, .filterButtons .activeFilter { border-color: #d3b08c; color: #f2e9e1; background: rgba(211,176,140,.09); }
+.datePicker { display: grid; gap: 6px; color: #7f7872; font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }
+.datePicker input { height: 38px; min-width: 180px; padding: 0 10px; color-scheme: dark; border: 1px solid rgba(255,255,255,.12); background: #090909; color: #e5ddd7; }
+.resultCount { margin-left: auto; color: #9a928b; font-size: 11px; }
+.itemsList li { margin: 0; }
+.itemButton { position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 7px; width: 100%; padding: 8px 10px; border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.025); color: #c9c0b8; text-align: left; cursor: pointer; }
+.itemButton:hover { border-color: rgba(211,176,140,.55); background: rgba(211,176,140,.06); }
+.itemButton small { grid-column: 2; color: #d3b08c; font-size: 10px; }
+.itemQuantity { color: #d3b08c; font-weight: 650; }
+.itemHint { align-self: center; color: #746d67; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.modalBackdrop { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.78); backdrop-filter: blur(5px); }
+.modal { position: relative; width: min(760px, 100%); max-height: 90vh; overflow: auto; padding: 28px; border: 1px solid rgba(211,176,140,.38); background: #11100f; box-shadow: 0 24px 80px rgba(0,0,0,.65); }
+.modalClose { position: absolute; top: 12px; right: 14px; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.12); background: #090909; color: #eee8e2; font-size: 26px; cursor: pointer; }
+.modalKicker { color: #d3b08c; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.modal h2 { margin: 7px 0 24px; font-size: clamp(26px, 4vw, 42px); font-weight: 450; }
+.modalContent { display: grid; grid-template-columns: minmax(230px, .8fr) 1fr; gap: 28px; }
+.itemImageWrap { position: relative; min-height: 310px; display: grid; place-items: center; overflow: hidden; border: 1px solid rgba(255,255,255,.08); background: #090909; color: #716a64; }
+.itemImage { object-fit: contain; }
+.itemDetails { align-content: start; display: grid; gap: 12px; }
+.itemDetails h3 { margin: 0 0 8px; color: #f0e8e0; font-size: 20px; line-height: 1.35; }
+.itemDetails p { display: flex; justify-content: space-between; gap: 20px; margin: 0; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+.itemDetails p span { color: #817a74; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.itemDetails p strong { color: #e5ddd7; text-align: right; }
+@media (max-width: 700px) { .resultCount { width: 100%; margin-left: 0; } .modalContent { grid-template-columns: 1fr; } .itemImageWrap { min-height: 260px; } .itemHint { display: none; } }
