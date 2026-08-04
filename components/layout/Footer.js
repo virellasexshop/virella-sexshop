@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const INSTAGRAM_URL = "https://www.instagram.com/virella.intima/";
-const WHATSAPP_URL = "https://w.app/8oozkx";
+const WHATSAPP_URL = "wa.link/ktmq5m";
 
 function InstagramIcon() {
   return (

@@ -78,4 +78,4 @@ automaticamente.
 ## Canais configurados
 
 - Instagram: `https://www.instagram.com/virella.intima/`
-- WhatsApp: `https://w.app/8oozkx`
+- WhatsApp: `wa.link/ktmq5m`
