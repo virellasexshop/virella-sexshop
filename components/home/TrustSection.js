@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "./HomeTrust.module.css";
 
 const instagramUrl = "https://www.instagram.com/virella.intima/";
-const whatsappUrl = "https://w.app/8oozkx";
+const whatsappUrl = "https://wa.link/ktmq5m";
 
 export default function TrustSection() {
   const companyName = process.env.NEXT_PUBLIC_VIRELLA_RAZAO_SOCIAL;

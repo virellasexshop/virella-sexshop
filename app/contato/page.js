@@ -11,7 +11,7 @@ export default function ContactPage() {
       introduction="Converse diretamente com a equipe da Virella pelos nossos canais oficiais."
     >
       <div className={styles.contactGrid}>
-        <a href="https://w.app/8oozkx" target="_blank" rel="noreferrer">
+        <a href="https://wa.link/ktmq5m" target="_blank" rel="noreferrer">
           <span>Resposta direta</span>
           <strong>WhatsApp</strong>
           <small>Abrir atendimento ↗</small>
