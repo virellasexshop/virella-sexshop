@@ -1,21 +1,21 @@
-AJUSTES DO PAINEL DE PEDIDOS
+VIRELLA — Confirmação de maioridade
 
-Incluído:
-- filtro "Todos";
-- filtro "Hoje";
-- escolha de uma data específica;
-- contador de resultados filtrados;
-- itens do pedido clicáveis;
-- janela de detalhes do item com imagem, variação, quantidade, preço unitário e total.
+Arquivos alterados/adicionados:
+- app/layout.js
+- components/AgeGate.jsx
+- components/AgeGate.module.css
 
-INSTALAÇÃO
-1. Extraia este ZIP.
-2. Copie as pastas app e modules para a raiz do projeto.
-3. Confirme a substituição dos arquivos.
-4. No terminal, execute:
+Instalação:
+1. Copie as pastas app e components para a raiz do projeto.
+2. Confirme a substituição de app/layout.js.
+3. Faça commit e push para o GitHub.
 
-   git add app/admin/pedidos modules/orders/order.service.js
-   git commit -m "Adiciona filtros e detalhes aos pedidos"
-   git push
+Comportamento:
+- A confirmação aparece na primeira visita do navegador.
+- Ao confirmar 18+, a escolha fica salva no navegador.
+- Ao escolher menor de 18 anos, o visitante é redirecionado para uma página neutra.
+- O painel /admin não exibe a confirmação.
 
-A Vercel fará o deploy automaticamente.
+Para testar novamente no mesmo navegador, abra o console e execute:
+localStorage.removeItem("virella_age_verified")
+Depois atualize a página.

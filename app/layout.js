@@ -1,6 +1,7 @@
 import Script from "next/script";
 import "./globals.css";
 import MetaPixel from "@/components/MetaPixel";
+import AgeGate from "@/components/AgeGate";
 
 const META_PIXEL_ID = "866337403001309";
 
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
+        <AgeGate />
         {children}
 
         <Script id="meta-pixel" strategy="afterInteractive">
