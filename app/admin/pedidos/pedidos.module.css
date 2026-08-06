@@ -7,7 +7,7 @@
 .card header strong { color: #e9e2dc; font-size: 13px; font-weight: 520; overflow-wrap: anywhere; }
 .card header small { color: #817a74; font-size: 10px; overflow-wrap: anywhere; }
 .card header .approved { color: #91bd97; }
-.body { display: grid; grid-template-columns: 1fr 1.1fr .75fr; gap: 25px; padding: 25px; }
+.body { display: grid; grid-template-columns: .9fr 1fr .8fr .7fr; gap: 25px; padding: 25px; }
 .body h3 { margin: 0 0 12px; }
 .body ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; color: #bbb2aa; font-size: 12px; }
 .body p { margin: 0; color: #9c948d; font-size: 12px; line-height: 1.7; }
@@ -46,3 +46,12 @@
 .itemDetails p span { color: #817a74; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .itemDetails p strong { color: #e5ddd7; text-align: right; }
 @media (max-width: 700px) { .resultCount { width: 100%; margin-left: 0; } .modalContent { grid-template-columns: 1fr; } .itemImageWrap { min-height: 260px; } .itemHint { display: none; } }
+
+.labelPanel { display: grid; gap: 10px; align-content: start; }
+.labelPanel label { display: grid; gap: 7px; color: #7f7872; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.labelPanel input { width: 100%; height: 40px; padding: 0 10px; border: 1px solid rgba(255,255,255,.1); background: #090909; color: #e5ddd7; }
+.labelPanel small { color: #817a74; font-size: 10px; line-height: 1.4; }
+.issueLabelButton, .printLabelButton { min-height: 40px; display: grid; place-items: center; padding: 0 12px; border: 1px solid #d3b08c; background: #d3b08c; color: #090909; text-decoration: none; text-align: center; cursor: pointer; }
+.issueLabelButton:disabled { opacity: .45; cursor: not-allowed; }
+.printLabelButton { background: #eee8e2; border-color: #eee8e2; }
+.labelError { color: #e18c8c !important; font-size: 11px !important; line-height: 1.4 !important; }

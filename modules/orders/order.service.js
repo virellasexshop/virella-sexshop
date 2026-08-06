@@ -1,6 +1,12 @@
 import "server-only";
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  checkoutShippingLabel,
+  createShippingLabelCart,
+  generateShippingLabel,
+  printShippingLabel,
+} from "@/lib/melhor-envio";
 
 export async function createOrder({ userId, customer, checkout }) {
   const supabase = createSupabaseAdminClient();
@@ -11,6 +17,7 @@ export async function createOrder({ userId, customer, checkout }) {
       cliente_nome: customer.nome,
       cliente_email: customer.email,
       cliente_telefone: customer.telefone || null,
+      cliente_documento: customer.documento,
       endereco_cep: customer.cep,
       endereco_rua: customer.rua,
       endereco_numero: customer.numero,
@@ -26,6 +33,7 @@ export async function createOrder({ userId, customer, checkout }) {
       frete_prazo_dias: checkout.frete_selecionado.prazo_dias,
       frete_preco_original: checkout.frete_selecionado.preco_original,
       frete_gratis: checkout.frete_selecionado.gratuito,
+      frete_pacotes: checkout.frete_selecionado.pacotes || [],
       total: checkout.total,
     })
     .select()
@@ -141,7 +149,7 @@ export async function getAdminOrders() {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("pedidos")
-    .select("*,pedido_itens(nome,variacao_nome,quantidade,preco_unitario,total,imagem_url)")
+    .select("*,pedido_itens(produto_id,nome,variacao_nome,quantidade,preco_unitario,total,imagem_url)")
     .order("criado_em", { ascending: false });
   if (error) throw error;
   return data || [];
@@ -164,3 +172,92 @@ export async function updateOrderStatus(orderId, status) {
     .eq("id", orderId);
   if (error) throw error;
 }
+
+
+export async function issueShippingLabel(orderId, invoiceKey = "") {
+  const supabase = createSupabaseAdminClient();
+  const { data: order, error: orderError } = await supabase
+    .from("pedidos")
+    .select("*,pedido_itens(produto_id,nome,variacao_nome,quantidade,preco_unitario,total,imagem_url)")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (orderError) throw orderError;
+  if (!order) throw new Error("Pedido não encontrado.");
+  if (order.frete_etiqueta_url) {
+    return { shipmentId: order.frete_etiqueta_id, printUrl: order.frete_etiqueta_url };
+  }
+
+  const updateLabel = async (values) => {
+    const { error } = await supabase
+      .from("pedidos")
+      .update({ ...values, atualizado_em: new Date().toISOString() })
+      .eq("id", order.id);
+    if (error) throw error;
+  };
+
+  try {
+    let shipmentId = order.frete_etiqueta_id;
+    let stage = order.frete_etiqueta_status;
+
+    if (!shipmentId) {
+      const productIds = [...new Set((order.pedido_itens || []).map((item) => item.produto_id).filter(Boolean))];
+      let logisticsByProduct = new Map();
+      if (productIds.length) {
+        const { data: products, error: productError } = await supabase
+          .from("produtos")
+          .select("id,peso_kg,altura_cm,largura_cm,comprimento_cm")
+          .in("id", productIds);
+        if (productError) throw productError;
+        logisticsByProduct = new Map((products || []).map((product) => [String(product.id), product]));
+      }
+      const items = (order.pedido_itens || []).map((item) => ({
+        ...item,
+        logistica: logisticsByProduct.get(String(item.produto_id)) || null,
+      }));
+      const cart = await createShippingLabelCart({ order, items, invoiceKey });
+      shipmentId = cart.shipmentId;
+      stage = "carrinho";
+      await updateLabel({
+        frete_etiqueta_id: shipmentId,
+        frete_etiqueta_status: stage,
+        frete_nota_fiscal_chave: cart.invoiceKey,
+        frete_etiqueta_erro: null,
+      });
+    }
+
+    if (stage === "carrinho" || !stage || stage === "erro") {
+      await checkoutShippingLabel(shipmentId);
+      stage = "comprada";
+      await updateLabel({ frete_etiqueta_status: stage, frete_etiqueta_erro: null });
+    }
+
+    if (stage === "comprada") {
+      await generateShippingLabel(shipmentId);
+      stage = "gerada";
+      await updateLabel({
+        frete_etiqueta_status: stage,
+        frete_etiqueta_gerada_em: new Date().toISOString(),
+        frete_etiqueta_erro: null,
+      });
+    }
+
+    const printUrl = await printShippingLabel(shipmentId);
+    await updateLabel({
+      frete_etiqueta_url: printUrl,
+      frete_etiqueta_status: "pronta",
+      frete_etiqueta_erro: null,
+      status_pedido: order.status_pedido === "novo" ? "em_separacao" : order.status_pedido,
+    });
+    return { shipmentId, printUrl };
+  } catch (error) {
+    await supabase
+      .from("pedidos")
+      .update({
+        frete_etiqueta_erro: String(error?.message || "Erro ao emitir etiqueta").slice(0, 500),
+        atualizado_em: new Date().toISOString(),
+      })
+      .eq("id", order.id);
+    throw error;
+  }
+}
+

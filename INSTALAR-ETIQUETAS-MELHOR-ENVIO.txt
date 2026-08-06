@@ -1,0 +1,27 @@
+INTEGRAÇÃO DE ETIQUETAS — MELHOR ENVIO
+
+1) No Supabase > SQL Editor, execute: supabase/etiquetas-melhor-envio.sql
+
+2) Na Vercel, adicione as variáveis:
+MELHOR_ENVIO_REMETENTE_NOME
+MELHOR_ENVIO_REMETENTE_EMAIL
+MELHOR_ENVIO_REMETENTE_TELEFONE
+MELHOR_ENVIO_REMETENTE_CPF (ou MELHOR_ENVIO_REMETENTE_CNPJ)
+MELHOR_ENVIO_REMETENTE_IE (use ISENTO se aplicável)
+MELHOR_ENVIO_REMETENTE_CNAE (se aplicável)
+MELHOR_ENVIO_REMETENTE_RUA
+MELHOR_ENVIO_REMETENTE_NUMERO
+MELHOR_ENVIO_REMETENTE_COMPLEMENTO (opcional)
+MELHOR_ENVIO_REMETENTE_BAIRRO
+MELHOR_ENVIO_REMETENTE_CIDADE
+MELHOR_ENVIO_REMETENTE_ESTADO (ex.: SC)
+
+As variáveis MELHOR_ENVIO_TOKEN, MELHOR_ENVIO_CEP_ORIGEM, MELHOR_ENVIO_USER_AGENT e MELHOR_ENVIO_AMBIENTE já são usadas no cálculo de frete.
+
+3) A conta do Melhor Envio precisa ter saldo suficiente para comprar a etiqueta.
+
+4) O token precisa das permissões de carrinho, checkout, geração e impressão.
+
+5) Pedidos novos passam a solicitar CPF/CNPJ do destinatário. Pedidos antigos sem esse dado não conseguem emitir etiqueta automaticamente.
+
+6) No painel Admin > Pedidos, use “Emitir e imprimir etiqueta”. A chave da NF-e é opcional no campo técnico; para envios comerciais, siga as obrigações fiscais aplicáveis.

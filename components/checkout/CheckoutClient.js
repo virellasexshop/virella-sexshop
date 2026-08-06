@@ -28,7 +28,7 @@ export default function CheckoutClient() {
   const [shippingError, setShippingError] = useState("");
   const [quotedPostalCode, setQuotedPostalCode] = useState("");
   const [customer, setCustomer] = useState({
-    nome: "", email: "", telefone: "", cep: "", rua: "", numero: "",
+    nome: "", email: "", telefone: "", documento: "", cep: "", rua: "", numero: "",
     complemento: "", bairro: "", cidade: "", estado: "",
   });
 
@@ -203,7 +203,7 @@ export default function CheckoutClient() {
               <label>Nome completo<input name="nome" value={customer.nome} onChange={updateField} autoComplete="name" required /></label>
               <label>E-mail<input name="email" type="email" value={customer.email} onChange={updateField} autoComplete="email" required /></label>
             </div>
-            <label>Telefone<input name="telefone" value={customer.telefone} onChange={updateField} autoComplete="tel" placeholder="(11) 99999-9999" /></label>
+            <div className={styles.gridTwo}><label>Telefone<input name="telefone" value={customer.telefone} onChange={updateField} autoComplete="tel" placeholder="(11) 99999-9999" required /></label><label>CPF/CNPJ do destinatário<input name="documento" value={customer.documento} onChange={updateField} inputMode="numeric" autoComplete="off" placeholder="Somente números" maxLength="18" required /></label></div>
           </div>
 
           <div className={styles.formCard}>

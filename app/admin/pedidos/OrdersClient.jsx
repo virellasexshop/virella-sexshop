@@ -25,6 +25,10 @@ export default function OrdersClient({ orders }) {
   const [filterMode, setFilterMode] = useState("all");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [invoiceKeys, setInvoiceKeys] = useState({});
+  const [labelLoading, setLabelLoading] = useState("");
+  const [labelErrors, setLabelErrors] = useState({});
+  const [labelUrls, setLabelUrls] = useState(() => Object.fromEntries(orders.filter((order) => order.frete_etiqueta_url).map((order) => [order.id, order.frete_etiqueta_url])));
 
   const filteredOrders = useMemo(() => {
     if (filterMode === "today") {
@@ -38,6 +42,35 @@ export default function OrdersClient({ orders }) {
 
     return orders;
   }, [orders, filterMode, selectedDate]);
+
+
+
+  async function issueLabel(orderId) {
+    const printWindow = window.open("", "_blank");
+    setLabelLoading(orderId);
+    setLabelErrors((current) => ({ ...current, [orderId]: "" }));
+    try {
+      const response = await fetch(`/api/admin/pedidos/${orderId}/etiqueta`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoice_key: invoiceKeys[orderId] || "" }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      setLabelUrls((current) => ({ ...current, [orderId]: result.print_url }));
+      if (printWindow) {
+        printWindow.opener = null;
+        printWindow.location.href = result.print_url;
+      } else {
+        window.location.assign(result.print_url);
+      }
+    } catch (error) {
+      if (printWindow) printWindow.close();
+      setLabelErrors((current) => ({ ...current, [orderId]: error.message || "Erro ao emitir etiqueta." }));
+    } finally {
+      setLabelLoading("");
+    }
+  }
 
   function chooseMode(mode) {
     setFilterMode(mode);
@@ -94,6 +127,35 @@ export default function OrdersClient({ orders }) {
                 <div>
                   <h3>Entrega</h3>
                   <p><strong className={styles.shippingService}>{order.frete_transportadora || "Transportadora"} — {order.frete_servico_nome || "Entrega"}</strong><br />{order.frete_gratis ? "Frete grátis" : money(order.frete)}{order.frete_prazo_dias ? ` · até ${order.frete_prazo_dias} dias úteis` : ""}<br /><br />{order.endereco_rua}, {order.endereco_numero}{order.endereco_complemento ? ` — ${order.endereco_complemento}` : ""}<br />{order.endereco_bairro} — {order.endereco_cidade}/{order.endereco_estado}<br />CEP {order.endereco_cep}</p>
+                </div>
+
+                <div className={styles.labelPanel}>
+                  <h3>Etiqueta de envio</h3>
+                  {labelUrls[order.id] ? (
+                    <a className={styles.printLabelButton} href={labelUrls[order.id]} target="_blank" rel="noreferrer">Imprimir etiqueta</a>
+                  ) : (
+                    <>
+                      <label>
+                        Chave da NF-e (opcional)
+                        <input
+                          value={invoiceKeys[order.id] || ""}
+                          onChange={(event) => setInvoiceKeys((current) => ({ ...current, [order.id]: event.target.value.replace(/\D/g, "").slice(0, 44) }))}
+                          inputMode="numeric"
+                          placeholder="44 números"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        className={styles.issueLabelButton}
+                        onClick={() => issueLabel(order.id)}
+                        disabled={order.status_pagamento !== "aprovado" || labelLoading === order.id}
+                      >
+                        {labelLoading === order.id ? "Emitindo..." : "Emitir e imprimir etiqueta"}
+                      </button>
+                      {order.status_pagamento !== "aprovado" ? <small>Aguardando aprovação do pagamento.</small> : null}
+                      {labelErrors[order.id] ? <p className={styles.labelError}>{labelErrors[order.id]}</p> : null}
+                    </>
+                  )}
                 </div>
 
                 <form action={updateOrderStatusAction}>
