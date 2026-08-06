@@ -52,9 +52,14 @@ export default async function AdminProdutosPage() {
             </p>
           </div>
 
-          <Link href="/admin/produtos/novo" className="adminButton">
-            Novo produto
-          </Link>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <a href="/api/admin/exportar-shopee" className="adminButton">
+              Exportar para Shopee
+            </a>
+            <Link href="/admin/produtos/novo" className="adminButton">
+              Novo produto
+            </Link>
+          </div>
         </div>
 
         <div className="adminInventorySummary">
