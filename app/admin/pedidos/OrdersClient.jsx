@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { updateOrderStatusAction } from "./actions";
 import styles from "./pedidos.module.css";
@@ -189,8 +188,18 @@ export default function OrdersClient({ orders }) {
             <div className={styles.modalContent}>
               <div className={styles.itemImageWrap}>
                 {selectedItem.imagem_url ? (
-                  <Image src={selectedItem.imagem_url} alt={selectedItem.nome} fill sizes="(max-width: 600px) 80vw, 320px" className={styles.itemImage} />
-                ) : <span>Sem imagem</span>}
+                  <img
+                    src={selectedItem.imagem_url}
+                    alt={selectedItem.nome}
+                    className={styles.itemImage}
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
+                      const fallback = event.currentTarget.nextElementSibling;
+                      if (fallback) fallback.style.display = "grid";
+                    }}
+                  />
+                ) : null}
+                <span style={{ display: selectedItem.imagem_url ? "none" : "grid" }}>Sem imagem disponível</span>
               </div>
 
               <div className={styles.itemDetails}>

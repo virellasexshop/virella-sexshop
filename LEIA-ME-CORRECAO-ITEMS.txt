@@ -1,0 +1,17 @@
+CORREÇÃO — DETALHES DOS ITENS NO PAINEL
+
+Esta atualização corrige:
+- opção/variação escolhida que não aparecia no modal;
+- imagem do produto que não carregava;
+- pedidos antigos com snapshot incompleto, usando como fallback os dados atuais do produto/variação.
+
+Arquivos alterados:
+- modules/orders/order.service.js
+- app/admin/pedidos/OrdersClient.jsx
+
+Copie as pastas app e modules para a raiz do projeto e confirme a substituição.
+Depois execute:
+
+git add app/admin/pedidos/OrdersClient.jsx modules/orders/order.service.js
+git commit -m "Corrige imagem e variação nos detalhes dos pedidos"
+git push
