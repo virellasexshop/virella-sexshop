@@ -47,7 +47,11 @@ export async function createProduct(values) {
 }
 
 export async function updateProduct(id, values) {
-  return repository.updateProduct(id, values);
+  const product = await repository.updateProduct(id, values);
+  import("@/modules/shopee/service")
+    .then(({ syncProduct }) => syncProduct(id))
+    .catch((error) => console.warn("Sincronização Shopee pendente:", error?.message));
+  return product;
 }
 
 export async function deleteProduct(id) {
@@ -103,7 +107,13 @@ export async function createProductVariations(productId, variations) {
 }
 
 export async function updateProductVariation(id, values) {
-  return repository.updateProductVariation(id, values);
+  const variation = await repository.updateProductVariation(id, values);
+  if (variation?.produto_id) {
+    import("@/modules/shopee/service")
+      .then(({ syncProduct }) => syncProduct(variation.produto_id))
+      .catch((error) => console.warn("Sincronização Shopee pendente:", error?.message));
+  }
+  return variation;
 }
 
 export async function deleteProductVariation(id) {

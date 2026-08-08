@@ -122,6 +122,19 @@ export async function toggleProductStatusAction(formData) {
   revalidateProducts();
 }
 
+export async function updateProductShowcaseAction(formData) {
+  await requireAdmin();
+  const id = getProductId(formData);
+
+  await updateProduct(id, {
+    mais_vendido: formData.get("mais_vendido") === "on",
+    novo: formData.get("novo") === "on",
+  });
+
+  revalidateProducts();
+  revalidatePath(`/admin/produtos/${id}`);
+}
+
 export async function updateProductShippingAction(formData) {
   await requireAdmin();
   const id = getProductId(formData);

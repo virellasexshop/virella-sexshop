@@ -11,6 +11,7 @@ import {
   updateVariationAction,
   updateMainOptionAction,
   updateProductShippingAction,
+  updateProductShowcaseAction,
 } from "../actions";
 import styles from "./produto.module.css";
 
@@ -33,6 +34,49 @@ export default async function ManageProductPage({ params }) {
           </div>
           <Link href="/admin/produtos" className="adminButton secondary">Voltar</Link>
         </div>
+
+        <section className={`${styles.card} ${styles.showcaseCard}`}>
+          <header>
+            <div>
+              <span>Vitrine da página inicial</span>
+              <h2>Mais vendido e novidade</h2>
+            </div>
+          </header>
+
+          <form action={updateProductShowcaseAction} className={styles.showcaseForm}>
+            <input type="hidden" name="produto_id" value={product.id} />
+
+            <label className={styles.showcaseOption}>
+              <input
+                type="checkbox"
+                name="mais_vendido"
+                defaultChecked={Boolean(product.mais_vendido)}
+              />
+              <span>
+                <strong>Mais vendido</strong>
+                <small>Exibe este produto na seção “Mais comprados” da página inicial.</small>
+              </span>
+            </label>
+
+            <label className={styles.showcaseOption}>
+              <input
+                type="checkbox"
+                name="novo"
+                defaultChecked={Boolean(product.novo)}
+              />
+              <span>
+                <strong>Novidade</strong>
+                <small>Exibe este produto na seção “Novidades” da página inicial.</small>
+              </span>
+            </label>
+
+            <button type="submit" className="adminButton">Salvar vitrine</button>
+          </form>
+
+          <p className={styles.mainOptionHint}>
+            Você pode marcar as duas opções ao mesmo tempo. A página inicial mostra até 4 produtos em cada seção.
+          </p>
+        </section>
 
         {(product.produto_variacoes || []).length > 0 && (
           <section className={`${styles.card} ${styles.mainOption}`}>
