@@ -1,0 +1,14 @@
+CORREÇÃO DO ENVIO DE GTIN / MOTIVO DE AUSÊNCIA - MERCADO LIVRE
+
+O que foi corrigido:
+- EMPTY_GTIN_REASON agora usa value_id quando o Mercado Livre fornece uma lista oficial de valores.
+- Para anúncios com variações, GTIN ou EMPTY_GTIN_REASON também são enviados dentro de cada variação quando necessário.
+- O atributo continua sendo enviado no nível principal do anúncio.
+
+Instalação:
+1. Copie a pasta lib para a raiz do projeto e substitua o arquivo existente.
+2. git add .
+3. git commit -m "Corrige envio de GTIN ao Mercado Livre"
+4. git push
+
+Não é necessário executar SQL no Supabase.
