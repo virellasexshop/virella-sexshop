@@ -76,6 +76,9 @@ export default function MercadoLivreManager({ initialProducts, account }) {
 
   function updateField(name, value) {
     setForm((current) => ({ ...current, [name]: value }));
+    if (["category_id", "gtin", "empty_gtin_reason", "brand", "model"].includes(name)) {
+      setMessage("");
+    }
   }
 
   async function api(url, options) {
@@ -548,7 +551,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
 
                 {(gtinMeta.required || gtinMeta.conditionalRequired) && !gtinMeta.canUseEmptyReason && !String(form.gtin || "").trim() && (
                   <small style={{ display: "block", marginTop: 8 }}>
-                    O Mercado Livre exige um GTIN/EAN real nesta categoria e não aceita a opção sem código de barras. Use o GTIN da embalagem/fornecedor ou revise a categoria se ela estiver incorreta.
+                    Esta categoria exige um GTIN/EAN real. O Mercado Livre rejeita a publicação sem esse código, mesmo quando existe o atributo de motivo sem GTIN. Use o número abaixo do código de barras da embalagem/fornecedor ou revise a categoria.
                   </small>
                 )}
               </div>

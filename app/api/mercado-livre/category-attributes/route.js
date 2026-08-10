@@ -27,10 +27,12 @@ export async function GET(request) {
         attribute: gtinAttribute
           ? { id: gtinAttribute.id, name: gtinAttribute.name, value_type: gtinAttribute.value_type, values: gtinAttribute.values || [] }
           : null,
+        // Só tratamos EMPTY_GTIN_REASON como substituto quando a própria categoria
+        // o marca explicitamente como obrigatório. Quando ambos aparecem apenas como
+        // conditional_required, o endpoint de publicação pode continuar exigindo GTIN.
         canUseEmptyReason: Boolean(
           !gtinAttribute?.tags?.required &&
-          emptyGtinReasonAttribute &&
-          (emptyGtinReasonAttribute?.tags?.required || emptyGtinReasonAttribute?.tags?.conditional_required)
+          emptyGtinReasonAttribute?.tags?.required
         ),
         emptyReason: emptyGtinReasonAttribute
           ? {

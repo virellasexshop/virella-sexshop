@@ -1,13 +1,18 @@
-CORREÇÃO DEFINITIVA DE VALIDAÇÃO GTIN - MERCADO LIVRE
+CORREÇÃO GTIN / MERCADO LIVRE
 
-O problema era de lógica: a tela considerava a simples existência do atributo EMPTY_GTIN_REASON como prova de que ele podia substituir GTIN. Isso não é verdade em todas as categorias.
+Esta versão corrige a falsa opção de publicar sem GTIN em categorias que o endpoint /items continua tratando como GTIN obrigatório.
 
-Agora:
-- se GTIN estiver marcado como required, o painel exige GTIN real;
-- a opção "sem GTIN" só aparece quando a própria metadata da categoria marca EMPTY_GTIN_REASON como required/conditional_required e GTIN não é required;
-- o servidor repete a mesma validação, impedindo o envio de payload que o ML já rejeitaria;
-- em categorias que aceitam justificativa, a justificativa continua funcionando.
+Arquivos alterados:
+- app/api/mercado-livre/category-attributes/route.js
+- app/admin/mercado-livre/MercadoLivreManager.jsx
+- lib/mercado-livre/products.js
 
-Para MLB41923, se a API marcar GTIN como required, será necessário usar o GTIN real do produto. Não invente código.
+Como instalar:
+1. Copie as pastas app e lib para a raiz do projeto.
+2. Substitua os arquivos existentes.
+3. git add .
+4. git commit -m "Corrige exigencia real de GTIN Mercado Livre"
+5. git push
 
-Copie app e lib para a raiz e faça deploy.
+Depois do deploy, abra o produto e clique novamente em Conferir ID.
+Se a categoria realmente exigir GTIN, a opção de ausência deixará de aparecer e a publicação será bloqueada antes de chamar a API.
