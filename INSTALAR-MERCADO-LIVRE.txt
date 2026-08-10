@@ -1,0 +1,98 @@
+VIRELLA — INTEGRAÇÃO DIRETA COM O MERCADO LIVRE
+================================================
+
+O que foi adicionado
+--------------------
+- Nova página Admin > Mercado Livre.
+- OAuth para conectar a conta de vendedor sem salvar a senha do ML.
+- Sugestão de categoria pelo título do produto.
+- Leitura dos atributos obrigatórios da categoria.
+- Publicação de produto com preço, fotos, descrição, SKU, GTIN e atributos.
+- Suporte a variações quando a categoria do Mercado Livre permitir e você escolher o atributo correto.
+- Sincronização de preço/título/quantidade.
+- Pausar e reativar anúncio.
+- Link direto para abrir o anúncio no Mercado Livre.
+- Refresh automático do access token.
+
+1) SUPABASE
+-----------
+Abra Supabase > SQL Editor e execute:
+
+supabase/mercado-livre.sql
+
+2) CRIE/CONFIGURE O APP NO MERCADO LIVRE DEVELOPERS
+---------------------------------------------------
+No app do Mercado Livre, use como Redirect URI exatamente:
+
+https://www.virellasexshop.com.br/api/mercado-livre/callback
+
+Copie o App ID / Client ID e o Secret.
+NÃO envie o Client Secret para outras pessoas e não coloque no código do GitHub.
+
+3) VERCEL > SETTINGS > ENVIRONMENT VARIABLES
+---------------------------------------------
+Adicione:
+
+MERCADO_LIVRE_CLIENT_ID=SEU_APP_ID
+MERCADO_LIVRE_CLIENT_SECRET=SEU_SECRET
+MERCADO_LIVRE_REDIRECT_URI=https://www.virellasexshop.com.br/api/mercado-livre/callback
+NEXT_PUBLIC_SITE_URL=https://www.virellasexshop.com.br
+
+Se você ATIVAR PKCE nas configurações do aplicativo do Mercado Livre, adicione também:
+
+MERCADO_LIVRE_USE_PKCE=true
+
+Se não ativar PKCE, deixe essa variável ausente ou false.
+
+4) COPIE ESTE PATCH PARA O PROJETO
+----------------------------------
+Copie as pastas app, components, lib e supabase para a raiz do projeto.
+Confirme a substituição de components/admin/AdminSidebar.jsx.
+
+5) GIT / VERCEL
+---------------
+git add .
+git commit -m "Integra produtos com Mercado Livre"
+git push
+
+A Vercel fará o deploy automático.
+
+6) CONECTAR A CONTA
+-------------------
+Entre no painel da Virella:
+Admin > Mercado Livre > Conectar Mercado Livre
+
+Faça login na conta de VENDEDOR que receberá os anúncios e autorize o aplicativo.
+
+7) PUBLICAR UM PRODUTO
+----------------------
+Em Admin > Mercado Livre:
+- clique em Configurar e publicar;
+- clique em Sugerir categoria;
+- confira a categoria;
+- clique em Conferir atributos;
+- preencha Marca, Modelo, GTIN e os atributos obrigatórios que aparecerem;
+- escolha Clássico ou Premium;
+- se o produto tiver opções, escolha o atributo de variação disponibilizado pela categoria;
+- clique em Publicar no Mercado Livre.
+
+IMPORTANTE SOBRE VARIAÇÕES
+--------------------------
+O Mercado Livre decide quais atributos podem ser usados como variações em cada categoria.
+Por isso o painel só mostra opções de variação depois que a categoria é carregada.
+Ex.: Cor, Tamanho, Sabor etc., quando a categoria permitir.
+
+Se você deixar "Publicar como um único anúncio sem opções", o anúncio é criado sem as variações do site.
+
+ERROS DE ATRIBUTOS
+------------------
+Categorias do Mercado Livre podem exigir dados que não existem no cadastro atual da Virella.
+Quando a API recusar um anúncio, o painel mostra a mensagem retornada pelo próprio Mercado Livre.
+Preencha o dado pedido e tente novamente.
+
+SEGURANÇA
+---------
+- Client Secret fica somente na Vercel.
+- Access token e refresh token ficam em tabela com RLS e sem acesso anon/authenticated.
+- As rotas de publicação exigem a sessão de administrador da Virella.
+- Não coloque tokens do Mercado Livre no NEXT_PUBLIC_*.
