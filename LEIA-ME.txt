@@ -1,18 +1,19 @@
-CORREÇÃO OAUTH MERCADO LIVRE
+CORREÇÃO 2 - OAUTH MERCADO LIVRE / DOMÍNIO VERCEL
 
-Motivo provável: o fluxo de autorização começou em virellasexshop.com.br e voltou para www.virellasexshop.com.br. O cookie de segurança OAuth era restrito ao host, então o callback não encontrava o state e mostrava "Autorização inválida ou expirada".
+O erro foi identificado: o painel estava sendo aberto em https://virella-sexshop.vercel.app.
+Esse domínio não pode criar um cookie pertencente a .virellasexshop.com.br.
+Por isso, após autorizar no Mercado Livre, o callback não encontrava o state do OAuth.
 
-A correção compartilha o cookie OAuth entre o domínio raiz e www e só remove o cookie após validar corretamente o retorno.
+1. Copie as pastas app e lib para a raiz do projeto e substitua os arquivos.
+2. Na Vercel, crie/edite também:
+   MERCADO_LIVRE_SITE_URL=https://www.virellasexshop.com.br
+3. Confirme:
+   MERCADO_LIVRE_REDIRECT_URI=https://www.virellasexshop.com.br/api/mercado-livre/callback
+4. Faça novo deploy.
+5. NÃO abra o admin pelo endereço *.vercel.app.
+   Use sempre:
+   https://www.virellasexshop.com.br/admin/mercado-livre
+6. Faça login no admin nesse domínio e clique em Conectar Mercado Livre.
 
-Copie a pasta app para a raiz do projeto e substitua os dois arquivos.
-
-Depois:
-git add app/api/mercado-livre/auth/route.js app/api/mercado-livre/callback/route.js
-git commit -m "Corrige OAuth Mercado Livre"
-git push
-
-Após o deploy:
-1. Faça login no admin da Virella primeiro.
-2. Abra /admin/mercado-livre.
-3. Clique em Conectar Mercado Livre.
-4. Autorize novamente no Mercado Livre.
+Com esta correção, se alguém tentar iniciar o OAuth pelo domínio da Vercel,
+o sistema redireciona primeiro para o domínio oficial antes de criar o cookie de segurança.

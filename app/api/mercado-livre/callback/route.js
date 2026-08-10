@@ -23,7 +23,14 @@ export async function GET(request) {
   }
 
   if (!code || !state || !expectedState || state !== expectedState) {
-    return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent("Autorização inválida ou expirada. Clique em Conectar Mercado Livre e autorize novamente.")}`);
+    const motivo = !code
+      ? "O Mercado Livre não retornou o código de autorização."
+      : !state
+        ? "O Mercado Livre não retornou o state da autorização."
+        : !expectedState
+          ? "O cookie de segurança do OAuth não foi encontrado. Abra o painel pelo domínio www.virellasexshop.com.br e tente novamente."
+          : "O state retornado pelo Mercado Livre não corresponde ao início da autorização.";
+    return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent(motivo)}`);
   }
 
   try {

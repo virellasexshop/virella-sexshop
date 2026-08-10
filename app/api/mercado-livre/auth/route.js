@@ -8,8 +8,17 @@ function base64url(buffer) {
   return buffer.toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-export async function GET() {
+export async function GET(request) {
   const config = getMercadoLivreConfig();
+  const currentUrl = new URL(request.url);
+  const canonical = new URL(config.siteUrl);
+
+  // Se o painel foi aberto pelo domínio da Vercel, primeiro migra o navegador
+  // para o domínio oficial. Um servidor em *.vercel.app não pode criar cookie
+  // para .virellasexshop.com.br, então o state do OAuth se perdia no callback.
+  if (process.env.NODE_ENV === "production" && currentUrl.hostname !== canonical.hostname) {
+    return NextResponse.redirect(new URL("/api/mercado-livre/auth", config.siteUrl));
+  }
 
   if (!(await hasAdminAccess())) {
     return NextResponse.redirect(new URL("/acesso-admin", config.siteUrl));
