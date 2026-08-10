@@ -27,6 +27,11 @@ export async function GET(request) {
         attribute: gtinAttribute
           ? { id: gtinAttribute.id, name: gtinAttribute.name, value_type: gtinAttribute.value_type, values: gtinAttribute.values || [] }
           : null,
+        canUseEmptyReason: Boolean(
+          !gtinAttribute?.tags?.required &&
+          emptyGtinReasonAttribute &&
+          (emptyGtinReasonAttribute?.tags?.required || emptyGtinReasonAttribute?.tags?.conditional_required)
+        ),
         emptyReason: emptyGtinReasonAttribute
           ? {
               id: emptyGtinReasonAttribute.id,

@@ -198,10 +198,10 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     const reason = String(form?.empty_gtin_reason || "").trim();
 
     if ((gtinMeta.required || gtinMeta.conditionalRequired) && !gtin && !reason) {
-      if (gtinMeta.emptyReason) {
-        setMessage("Esta categoria exige GTIN/EAN. Informe o código de barras ou selecione o motivo pelo qual este produto não possui GTIN.");
+      if (gtinMeta.canUseEmptyReason) {
+        setMessage("Esta categoria exige GTIN/EAN. Informe o código de barras ou selecione um motivo aceito para a ausência do GTIN.");
       } else {
-        setMessage("Esta categoria exige GTIN/EAN e não oferece exceção para produto sem código de barras.");
+        setMessage("O Mercado Livre exige um GTIN/EAN real nesta categoria. O motivo de ausência não substitui o GTIN aqui.");
       }
       return false;
     }
@@ -517,7 +517,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                   />
                 </label>
 
-                {(gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && gtinMeta.emptyReason && (
+                {(gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && gtinMeta.canUseEmptyReason && gtinMeta.emptyReason && (
                   <div style={{ marginTop: 12, padding: 16, border: "1px solid #6d5521", background: "#1b160b" }}>
                     <strong style={{ display: "block", marginBottom: 8 }}>Este produto não possui GTIN/EAN?</strong>
                     <p style={{ margin: "0 0 12px", opacity: 0.82 }}>
@@ -546,9 +546,9 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                   </div>
                 )}
 
-                {(gtinMeta.required || gtinMeta.conditionalRequired) && !gtinMeta.emptyReason && !String(form.gtin || "").trim() && (
+                {(gtinMeta.required || gtinMeta.conditionalRequired) && !gtinMeta.canUseEmptyReason && !String(form.gtin || "").trim() && (
                   <small style={{ display: "block", marginTop: 8 }}>
-                    Esta categoria exige um GTIN/EAN e não informou uma opção de exceção para produto sem código.
+                    O Mercado Livre exige um GTIN/EAN real nesta categoria e não aceita a opção sem código de barras. Use o GTIN da embalagem/fornecedor ou revise a categoria se ela estiver incorreta.
                   </small>
                 )}
               </div>
@@ -646,13 +646,13 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                     loading ||
                     !form.category_id ||
                     !categoryValidated ||
-                    ((gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && !String(form.empty_gtin_reason || "").trim())
+                    ((gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && !(gtinMeta.canUseEmptyReason && String(form.empty_gtin_reason || "").trim()))
                   }>
                   {loading
                     ? "Publicando..."
                     : !categoryValidated
                       ? "Valide a categoria para publicar"
-                      : (gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && !String(form.empty_gtin_reason || "").trim()
+                      : (gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && !(gtinMeta.canUseEmptyReason && String(form.empty_gtin_reason || "").trim())
                         ? "Informe o GTIN ou o motivo da ausência"
                         : "Publicar no Mercado Livre"}
                 </button>
