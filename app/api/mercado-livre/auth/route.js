@@ -9,11 +9,12 @@ function base64url(buffer) {
 }
 
 export async function GET() {
+  const config = getMercadoLivreConfig();
+
   if (!(await hasAdminAccess())) {
-    return NextResponse.redirect(new URL("/acesso-admin", getMercadoLivreConfig().siteUrl));
+    return NextResponse.redirect(new URL("/acesso-admin", config.siteUrl));
   }
 
-  const config = getMercadoLivreConfig();
   const state = base64url(randomBytes(24));
   const verifier = base64url(randomBytes(48));
   const params = new URLSearchParams({
@@ -36,7 +37,9 @@ export async function GET() {
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 10 * 60,
+    ...(process.env.NODE_ENV === "production" ? { domain: ".virellasexshop.com.br" } : {}),
   };
+
   cookieStore.set("virella_ml_oauth_state", state, cookieOptions);
   if (config.usePkce) cookieStore.set("virella_ml_pkce", verifier, cookieOptions);
 

@@ -1,21 +1,18 @@
-VIRELLA — Confirmação de maioridade
+CORREÇÃO OAUTH MERCADO LIVRE
 
-Arquivos alterados/adicionados:
-- app/layout.js
-- components/AgeGate.jsx
-- components/AgeGate.module.css
+Motivo provável: o fluxo de autorização começou em virellasexshop.com.br e voltou para www.virellasexshop.com.br. O cookie de segurança OAuth era restrito ao host, então o callback não encontrava o state e mostrava "Autorização inválida ou expirada".
 
-Instalação:
-1. Copie as pastas app e components para a raiz do projeto.
-2. Confirme a substituição de app/layout.js.
-3. Faça commit e push para o GitHub.
+A correção compartilha o cookie OAuth entre o domínio raiz e www e só remove o cookie após validar corretamente o retorno.
 
-Comportamento:
-- A confirmação aparece na primeira visita do navegador.
-- Ao confirmar 18+, a escolha fica salva no navegador.
-- Ao escolher menor de 18 anos, o visitante é redirecionado para uma página neutra.
-- O painel /admin não exibe a confirmação.
+Copie a pasta app para a raiz do projeto e substitua os dois arquivos.
 
-Para testar novamente no mesmo navegador, abra o console e execute:
-localStorage.removeItem("virella_age_verified")
-Depois atualize a página.
+Depois:
+git add app/api/mercado-livre/auth/route.js app/api/mercado-livre/callback/route.js
+git commit -m "Corrige OAuth Mercado Livre"
+git push
+
+Após o deploy:
+1. Faça login no admin da Virella primeiro.
+2. Abra /admin/mercado-livre.
+3. Clique em Conectar Mercado Livre.
+4. Autorize novamente no Mercado Livre.

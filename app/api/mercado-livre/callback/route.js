@@ -3,24 +3,27 @@ import { NextResponse } from "next/server";
 import { getMercadoLivreConfig } from "@/lib/mercado-livre/config";
 import { saveMercadoLivreAccount } from "@/lib/mercado-livre/token-store";
 
+const cookieDeleteOptions = {
+  path: "/",
+  ...(process.env.NODE_ENV === "production" ? { domain: ".virellasexshop.com.br" } : {}),
+};
+
 export async function GET(request) {
   const config = getMercadoLivreConfig();
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  const oauthError = url.searchParams.get("error") || url.searchParams.get("error_description");
+  const oauthError = url.searchParams.get("error_description") || url.searchParams.get("error");
   const cookieStore = await cookies();
   const expectedState = cookieStore.get("virella_ml_oauth_state")?.value;
   const verifier = cookieStore.get("virella_ml_pkce")?.value;
 
-  cookieStore.delete("virella_ml_oauth_state");
-  cookieStore.delete("virella_ml_pkce");
-
   if (oauthError) {
     return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent(oauthError)}`);
   }
+
   if (!code || !state || !expectedState || state !== expectedState) {
-    return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent("Autorização inválida ou expirada.")}`);
+    return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent("Autorização inválida ou expirada. Clique em Conectar Mercado Livre e autorize novamente.")}`);
   }
 
   try {
@@ -39,9 +42,10 @@ export async function GET(request) {
       body: form,
       cache: "no-store",
     });
+
     const token = await response.json();
     if (!response.ok || !token?.access_token || !token?.user_id) {
-      throw new Error(token?.message || token?.error || "Não foi possível obter o token do Mercado Livre.");
+      throw new Error(token?.message || token?.error_description || token?.error || "Não foi possível obter o token do Mercado Livre.");
     }
 
     let nickname = null;
@@ -64,6 +68,9 @@ export async function GET(request) {
       token_expires_at: new Date(Date.now() + Number(token.expires_in || 21600) * 1000).toISOString(),
       scope: token.scope || null,
     });
+
+    cookieStore.delete({ name: "virella_ml_oauth_state", ...cookieDeleteOptions });
+    cookieStore.delete({ name: "virella_ml_pkce", ...cookieDeleteOptions });
 
     return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?conectado=1`);
   } catch (error) {
