@@ -42,7 +42,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
   const [form, setForm] = useState(null);
   const [required, setRequired] = useState([]);
   const [variationAttributes, setVariationAttributes] = useState([]);
-  const [gtinMeta, setGtinMeta] = useState({ required: false, attribute: null, emptyReason: null });
+  const [gtinMeta, setGtinMeta] = useState({ required: false, conditionalRequired: false, attribute: null, emptyReason: null });
   const [categoryCandidates, setCategoryCandidates] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [categoryPath, setCategoryPath] = useState([]);
@@ -64,7 +64,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     setForm(initialForm(product));
     setRequired([]);
     setVariationAttributes([]);
-    setGtinMeta({ required: false, attribute: null, emptyReason: null });
+    setGtinMeta({ required: false, conditionalRequired: false, attribute: null, emptyReason: null });
     setCategoryCandidates([]);
     setCategoryOptions([]);
     setCategoryPath([]);
@@ -97,7 +97,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     );
     setRequired(data.required || []);
     setVariationAttributes(data.variationAttributes || []);
-    setGtinMeta(data.gtin || { required: false, attribute: null, emptyReason: null });
+    setGtinMeta(data.gtin || { required: false, conditionalRequired: false, attribute: null, emptyReason: null });
   }
 
   async function suggestCategory() {
@@ -197,7 +197,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     const gtin = String(form?.gtin || "").trim();
     const reason = String(form?.empty_gtin_reason || "").trim();
 
-    if (gtinMeta.required && !gtin && !reason) {
+    if ((gtinMeta.required || gtinMeta.conditionalRequired) && !gtin && !reason) {
       if (gtinMeta.emptyReason) {
         setMessage("Esta categoria exige GTIN/EAN. Informe o código de barras ou selecione o motivo pelo qual este produto não possui GTIN.");
       } else {
@@ -505,7 +505,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
               </label>
               <div className={styles.full}>
                 <label>
-                  GTIN / EAN {gtinMeta.required ? "(obrigatório nesta categoria)" : ""}
+                  GTIN / EAN {(gtinMeta.required || gtinMeta.conditionalRequired) ? "(obrigatório nesta categoria)" : ""}
                   <input
                     value={form.gtin}
                     onChange={(e) => {
@@ -517,7 +517,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                   />
                 </label>
 
-                {gtinMeta.required && !String(form.gtin || "").trim() && gtinMeta.emptyReason && (
+                {(gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && gtinMeta.emptyReason && (
                   <div style={{ marginTop: 12, padding: 16, border: "1px solid #6d5521", background: "#1b160b" }}>
                     <strong style={{ display: "block", marginBottom: 8 }}>Este produto não possui GTIN/EAN?</strong>
                     <p style={{ margin: "0 0 12px", opacity: 0.82 }}>
@@ -546,7 +546,7 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                   </div>
                 )}
 
-                {gtinMeta.required && !gtinMeta.emptyReason && !String(form.gtin || "").trim() && (
+                {(gtinMeta.required || gtinMeta.conditionalRequired) && !gtinMeta.emptyReason && !String(form.gtin || "").trim() && (
                   <small style={{ display: "block", marginTop: 8 }}>
                     Esta categoria exige um GTIN/EAN e não informou uma opção de exceção para produto sem código.
                   </small>
@@ -646,13 +646,13 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                     loading ||
                     !form.category_id ||
                     !categoryValidated ||
-                    (gtinMeta.required && !String(form.gtin || "").trim() && !String(form.empty_gtin_reason || "").trim())
+                    ((gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && !String(form.empty_gtin_reason || "").trim())
                   }>
                   {loading
                     ? "Publicando..."
                     : !categoryValidated
                       ? "Valide a categoria para publicar"
-                      : gtinMeta.required && !String(form.gtin || "").trim() && !String(form.empty_gtin_reason || "").trim()
+                      : (gtinMeta.required || gtinMeta.conditionalRequired) && !String(form.gtin || "").trim() && !String(form.empty_gtin_reason || "").trim()
                         ? "Informe o GTIN ou o motivo da ausência"
                         : "Publicar no Mercado Livre"}
                 </button>

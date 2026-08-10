@@ -1,0 +1,16 @@
+CORREÇÃO GTIN CONDICIONAL - MERCADO LIVRE
+
+O problema era que o painel verificava somente tags.required.
+O Mercado Livre também usa tags.conditional_required para GTIN. Nesses casos, se o produto não possui código, a categoria pode permitir EMPTY_GTIN_REASON.
+
+A correção:
+- reconhece GTIN required e conditional_required;
+- mostra o seletor de motivo de ausência quando EMPTY_GTIN_REASON existir;
+- bloqueia publicação sem GTIN/motivo quando necessário;
+- mantém a validação no servidor.
+
+Copie as pastas app e lib para a raiz do projeto, substituindo os arquivos.
+Depois:
+git add .
+git commit -m "Corrige GTIN condicional Mercado Livre"
+git push

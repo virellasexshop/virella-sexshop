@@ -23,6 +23,7 @@ export async function GET(request) {
       variationAttributes,
       gtin: {
         required: Boolean(gtinAttribute?.tags?.required),
+        conditionalRequired: Boolean(gtinAttribute?.tags?.conditional_required),
         attribute: gtinAttribute
           ? { id: gtinAttribute.id, name: gtinAttribute.name, value_type: gtinAttribute.value_type, values: gtinAttribute.values || [] }
           : null,
@@ -31,6 +32,7 @@ export async function GET(request) {
               id: emptyGtinReasonAttribute.id,
               name: emptyGtinReasonAttribute.name,
               required: Boolean(emptyGtinReasonAttribute?.tags?.required),
+              conditionalRequired: Boolean(emptyGtinReasonAttribute?.tags?.conditional_required),
               value_type: emptyGtinReasonAttribute.value_type,
               values: emptyGtinReasonAttribute.values || [],
             }
