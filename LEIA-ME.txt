@@ -1,17 +1,12 @@
-CORREÇÃO OAUTH MERCADO LIVRE - REFRESH TOKEN
+CORREÇÃO DE BUILD - MERCADO LIVRE / GTIN
 
-1) No Supabase > SQL Editor, execute:
-   supabase/mercado-livre-refresh-token-nullable.sql
+O erro da Vercel acontecia porque `emptyGtinReasonMeta` foi declarado duas vezes no mesmo escopo.
 
-2) Copie as pastas lib e app para a raiz do projeto, substituindo os arquivos.
+Substitua apenas:
+lib/mercado-livre/products.js
 
-3) Commit e push:
-   git add .
-   git commit -m "Corrige armazenamento OAuth Mercado Livre"
-   git push
+Depois execute:
 
-4) Depois do deploy, entre em:
-   https://www.virellasexshop.com.br/admin/mercado-livre
-   e clique em Conectar Mercado Livre novamente.
-
-Observação: se o Mercado Livre continuar não retornando refresh_token, o access_token ainda poderá ser usado enquanto válido. Quando expirar, o painel solicitará nova autorização em vez de quebrar a integração.
+git add lib/mercado-livre/products.js
+git commit -m "Corrige build da integração Mercado Livre"
+git push
