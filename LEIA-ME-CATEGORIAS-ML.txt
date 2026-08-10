@@ -1,0 +1,19 @@
+CORREÇÃO DO SELETOR DE CATEGORIAS DO MERCADO LIVRE
+
+O que muda:
+- "Buscar sugestões" mostra várias categorias e nunca seleciona/publica uma automaticamente.
+- "Escolher categoria" abre um navegador hierárquico de categorias do Mercado Livre.
+- O nome e o ID da categoria escolhida ficam visíveis antes da publicação.
+- Se um ID for digitado manualmente, é obrigatório clicar em "Conferir ID" antes de publicar.
+- O botão de publicar fica bloqueado até a categoria ser validada.
+
+Instalação:
+1. Copie as pastas app e lib deste pacote para a raiz do projeto.
+2. Confirme a substituição dos arquivos existentes.
+3. Rode:
+   git add .
+   git commit -m "Melhora seleção de categorias Mercado Livre"
+   git push
+4. Aguarde o deploy da Vercel.
+
+Não é necessário executar SQL no Supabase para esta alteração.

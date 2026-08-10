@@ -41,6 +41,12 @@ export default function MercadoLivreManager({ initialProducts, account }) {
   const [form, setForm] = useState(null);
   const [required, setRequired] = useState([]);
   const [variationAttributes, setVariationAttributes] = useState([]);
+  const [categoryCandidates, setCategoryCandidates] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [categoryPath, setCategoryPath] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryValidated, setCategoryValidated] = useState(false);
+  const [categoryBrowserOpen, setCategoryBrowserOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [query, setQuery] = useState("");
@@ -56,6 +62,12 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     setForm(initialForm(product));
     setRequired([]);
     setVariationAttributes([]);
+    setCategoryCandidates([]);
+    setCategoryOptions([]);
+    setCategoryPath([]);
+    setCategoryName("");
+    setCategoryValidated(Boolean(product.mapping?.category_id));
+    setCategoryBrowserOpen(false);
     setMessage("");
   }
 
@@ -88,18 +100,77 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     if (!form?.title) return;
     setLoading(true);
     setMessage("");
+    setCategoryValidated(false);
     try {
       const data = await api(`/api/mercado-livre/categories?q=${encodeURIComponent(form.title)}`);
-      const category = data.category;
-      if (!category?.category_id) throw new Error("O Mercado Livre não sugeriu uma categoria para esse título.");
-      updateField("category_id", category.category_id);
-      setMessage(`Categoria sugerida: ${category.category_name || category.category_id}`);
-      await loadAttributes(category.category_id);
+      const candidates = Array.isArray(data.candidates) ? data.candidates : [];
+      setCategoryCandidates(candidates);
+      if (!candidates.length) {
+        setMessage("O Mercado Livre não encontrou sugestões confiáveis. Use ‘Escolher categoria’ para navegar manualmente.");
+      } else {
+        setMessage("Confira as sugestões abaixo e selecione a categoria correta antes de publicar.");
+      }
     } catch (error) {
       setMessage(error.message);
     } finally {
       setLoading(false);
     }
+  }
+
+  async function chooseCategory(categoryId, name = "") {
+    updateField("category_id", categoryId);
+    setCategoryName(name || categoryId);
+    setCategoryCandidates([]);
+    setCategoryValidated(false);
+    setLoading(true);
+    setMessage("");
+    try {
+      await loadAttributes(categoryId);
+      setCategoryValidated(true);
+      setMessage(`Categoria selecionada: ${name || categoryId}. Confira os atributos obrigatórios.`);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function openCategoryBrowser() {
+    setLoading(true);
+    setMessage("");
+    try {
+      const data = await api("/api/mercado-livre/category-options");
+      setCategoryOptions(data.categories || []);
+      setCategoryPath([]);
+      setCategoryBrowserOpen(true);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function browseCategory(category) {
+    setLoading(true);
+    setMessage("");
+    try {
+      const data = await api(`/api/mercado-livre/category-options?parent_id=${encodeURIComponent(category.id)}`);
+      if (data.leaf || !data.categories?.length) {
+        setCategoryBrowserOpen(false);
+        await chooseCategory(category.id, category.name);
+        return;
+      }
+      setCategoryPath((current) => [...current, category]);
+      setCategoryOptions(data.categories || []);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function restartCategoryBrowser() {
+    await openCategoryBrowser();
   }
 
   async function inspectCategory() {
@@ -108,7 +179,9 @@ export default function MercadoLivreManager({ initialProducts, account }) {
     setMessage("");
     try {
       await loadAttributes(form.category_id);
-      setMessage("Categoria carregada. Confira os atributos obrigatórios abaixo.");
+      setCategoryValidated(true);
+      setCategoryName(form.category_id);
+      setMessage("Categoria válida e carregada. Confira os atributos obrigatórios abaixo.");
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -325,16 +398,76 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                   <input
                     value={form.category_id}
                     placeholder="Ex: MLB1234"
-                    onChange={(e) => updateField("category_id", e.target.value.toUpperCase())}
+                    onChange={(e) => { updateField("category_id", e.target.value.toUpperCase()); setCategoryValidated(false); setCategoryName(""); }}
                   />
                 </label>
                 <button type="button" className="adminRowButton" onClick={suggestCategory} disabled={loading}>
-                  Sugerir categoria
+                  Buscar sugestões
+                </button>
+                <button type="button" className="adminRowButton" onClick={openCategoryBrowser} disabled={loading}>
+                  Escolher categoria
                 </button>
                 <button type="button" className="adminRowButton" onClick={inspectCategory} disabled={loading || !form.category_id}>
-                  Conferir atributos
+                  Conferir ID
                 </button>
               </div>
+
+              {(categoryName || form.category_id) && (
+                <div className={`${styles.selectedCategory} ${styles.full}`}>
+                  <span>Categoria selecionada</span>
+                  <strong>{categoryName || form.category_id}</strong>
+                  <small>{form.category_id}{categoryValidated ? " • validada" : " • ainda não validada"}</small>
+                </div>
+              )}
+
+              {categoryCandidates.length > 0 && (
+                <div className={`${styles.categorySuggestions} ${styles.full}`}>
+                  <strong>Sugestões do Mercado Livre</strong>
+                  <p>Não publicamos automaticamente: escolha somente se a categoria realmente corresponder ao produto.</p>
+                  <div className={styles.categorySuggestionGrid}>
+                    {categoryCandidates.map((category) => (
+                      <button
+                        key={category.category_id}
+                        type="button"
+                        onClick={() => chooseCategory(category.category_id, category.category_name)}
+                        disabled={loading}
+                      >
+                        <strong>{category.category_name}</strong>
+                        {category.domain_name && <span>{category.domain_name}</span>}
+                        <small>{category.category_id}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {categoryBrowserOpen && (
+                <div className={`${styles.categoryBrowser} ${styles.full}`}>
+                  <div className={styles.categoryBrowserHeader}>
+                    <div>
+                      <strong>Escolher categoria manualmente</strong>
+                      <p>Entre nas categorias até chegar à opção mais específica para o produto.</p>
+                    </div>
+                    {categoryPath.length > 0 && (
+                      <button type="button" className="adminRowButton" onClick={restartCategoryBrowser} disabled={loading}>
+                        Voltar ao início
+                      </button>
+                    )}
+                  </div>
+                  {categoryPath.length > 0 && (
+                    <div className={styles.categoryBreadcrumb}>
+                      {categoryPath.map((item) => <span key={item.id}>{item.name}</span>)}
+                    </div>
+                  )}
+                  <div className={styles.categoryOptionGrid}>
+                    {categoryOptions.map((category) => (
+                      <button key={category.id} type="button" onClick={() => browseCategory(category)} disabled={loading}>
+                        <span>{category.name}</span><small>{category.id}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <label>
                 Marca
@@ -438,8 +571,8 @@ export default function MercadoLivreManager({ initialProducts, account }) {
                   </button>
                 </>
               ) : (
-                <button type="button" className="adminButton" onClick={publish} disabled={loading || !form.category_id}>
-                  {loading ? "Publicando..." : "Publicar no Mercado Livre"}
+                <button type="button" className="adminButton" onClick={publish} disabled={loading || !form.category_id || !categoryValidated}>
+                  {loading ? "Publicando..." : categoryValidated ? "Publicar no Mercado Livre" : "Valide a categoria para publicar"}
                 </button>
               )}
             </footer>
