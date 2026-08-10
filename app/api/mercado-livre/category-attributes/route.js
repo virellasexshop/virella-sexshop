@@ -13,7 +13,30 @@ export async function GET(request) {
     const variationAttributes = attributes
       .filter((item) => item?.tags?.allow_variations)
       .map((item) => ({ id: item.id, name: item.name, value_type: item.value_type, values: item.values || [] }));
-    return Response.json({ ok: true, required, variationAttributes });
+
+    const gtinAttribute = attributes.find((item) => item?.id === "GTIN") || null;
+    const emptyGtinReasonAttribute = attributes.find((item) => item?.id === "EMPTY_GTIN_REASON") || null;
+
+    return Response.json({
+      ok: true,
+      required,
+      variationAttributes,
+      gtin: {
+        required: Boolean(gtinAttribute?.tags?.required),
+        attribute: gtinAttribute
+          ? { id: gtinAttribute.id, name: gtinAttribute.name, value_type: gtinAttribute.value_type, values: gtinAttribute.values || [] }
+          : null,
+        emptyReason: emptyGtinReasonAttribute
+          ? {
+              id: emptyGtinReasonAttribute.id,
+              name: emptyGtinReasonAttribute.name,
+              required: Boolean(emptyGtinReasonAttribute?.tags?.required),
+              value_type: emptyGtinReasonAttribute.value_type,
+              values: emptyGtinReasonAttribute.values || [],
+            }
+          : null,
+      },
+    });
   } catch (error) {
     return jsonError(error);
   }

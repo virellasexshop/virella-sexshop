@@ -1,0 +1,24 @@
+CORREÇÃO GTIN / EAN - MERCADO LIVRE
+
+O que muda:
+- O painel identifica automaticamente quando a categoria exige GTIN.
+- Se houver um GTIN/EAN, informe o número no campo correspondente.
+- Se o produto não tiver GTIN e a categoria do Mercado Livre permitir exceção, o painel mostra o atributo EMPTY_GTIN_REASON com os motivos aceitos pela própria categoria.
+- O botão Publicar fica bloqueado até GTIN ou motivo válido ser informado.
+- O servidor também valida os dados antes de chamar /items, evitando publicação incompleta.
+- EMPTY_GTIN_REASON deixa de aparecer duplicado na lista genérica de atributos.
+
+INSTALAÇÃO
+1) Copie as pastas app e lib deste pacote para a raiz do projeto.
+2) Confirme a substituição dos três arquivos.
+3) Faça commit/push:
+   git add .
+   git commit -m "Trata GTIN obrigatório no Mercado Livre"
+   git push
+4) Aguarde o deploy da Vercel.
+5) Abra novamente o produto, valide a categoria e confira os atributos.
+
+Não precisa executar SQL no Supabase.
+
+IMPORTANTE
+Nunca invente um GTIN/EAN. Se o produto possuir código de barras, use o código real da embalagem/fornecedor. Se não possuir, use somente um motivo de ausência disponibilizado pela própria categoria do Mercado Livre.
