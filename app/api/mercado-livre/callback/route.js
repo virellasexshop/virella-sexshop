@@ -3,34 +3,24 @@ import { NextResponse } from "next/server";
 import { getMercadoLivreConfig } from "@/lib/mercado-livre/config";
 import { saveMercadoLivreAccount } from "@/lib/mercado-livre/token-store";
 
-const cookieDeleteOptions = {
-  path: "/",
-  ...(process.env.NODE_ENV === "production" ? { domain: ".virellasexshop.com.br" } : {}),
-};
-
 export async function GET(request) {
   const config = getMercadoLivreConfig();
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  const oauthError = url.searchParams.get("error_description") || url.searchParams.get("error");
+  const oauthError = url.searchParams.get("error") || url.searchParams.get("error_description");
   const cookieStore = await cookies();
   const expectedState = cookieStore.get("virella_ml_oauth_state")?.value;
   const verifier = cookieStore.get("virella_ml_pkce")?.value;
 
+  cookieStore.delete("virella_ml_oauth_state");
+  cookieStore.delete("virella_ml_pkce");
+
   if (oauthError) {
     return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent(oauthError)}`);
   }
-
   if (!code || !state || !expectedState || state !== expectedState) {
-    const motivo = !code
-      ? "O Mercado Livre não retornou o código de autorização."
-      : !state
-        ? "O Mercado Livre não retornou o state da autorização."
-        : !expectedState
-          ? "O cookie de segurança do OAuth não foi encontrado. Abra o painel pelo domínio www.virellasexshop.com.br e tente novamente."
-          : "O state retornado pelo Mercado Livre não corresponde ao início da autorização.";
-    return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent(motivo)}`);
+    return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?erro=${encodeURIComponent("Autorização inválida ou expirada.")}`);
   }
 
   try {
@@ -49,10 +39,9 @@ export async function GET(request) {
       body: form,
       cache: "no-store",
     });
-
     const token = await response.json();
     if (!response.ok || !token?.access_token || !token?.user_id) {
-      throw new Error(token?.message || token?.error_description || token?.error || "Não foi possível obter o token do Mercado Livre.");
+      throw new Error(token?.message || token?.error || "Não foi possível obter o token do Mercado Livre.");
     }
 
     let nickname = null;
@@ -75,9 +64,6 @@ export async function GET(request) {
       token_expires_at: new Date(Date.now() + Number(token.expires_in || 21600) * 1000).toISOString(),
       scope: token.scope || null,
     });
-
-    cookieStore.delete({ name: "virella_ml_oauth_state", ...cookieDeleteOptions });
-    cookieStore.delete({ name: "virella_ml_pkce", ...cookieDeleteOptions });
 
     return NextResponse.redirect(`${config.siteUrl}/admin/mercado-livre?conectado=1`);
   } catch (error) {
