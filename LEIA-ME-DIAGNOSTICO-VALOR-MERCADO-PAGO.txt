@@ -1,0 +1,10 @@
+DIAGNOSTICO TEMPORARIO - MERCADO PAGO
+
+Esta versao adiciona apenas logs seguros para comparar o valor retornado pelo Mercado Pago com o total salvo no pedido.
+Nao registra access token, assinatura secreta ou outras credenciais.
+
+Depois do deploy:
+1. Abra Vercel > Logs.
+2. No Mercado Pago, execute novamente Simular notificacao com o mesmo pagamento.
+3. Procure por: [MercadoPago webhook] conferencia de valores
+4. Envie os campos transactionAmount, externalReference, pedidoId e totalPedido.

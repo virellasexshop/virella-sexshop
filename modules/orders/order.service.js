@@ -94,8 +94,25 @@ export async function updateOrderFromPayment(payment) {
   const order = await getOrderById(orderId);
   if (!order) return null;
 
-  const amountMatches = Math.abs(Number(payment.transaction_amount) - Number(order.total)) < 0.01;
+  const paymentAmount = Number(payment.transaction_amount);
+  const orderTotal = Number(order.total);
+  const amountMatches = Math.abs(paymentAmount - orderTotal) < 0.01;
   const currencyMatches = !payment.currency_id || payment.currency_id === "BRL";
+
+  console.info("[MercadoPago webhook] conferencia de valores", {
+    paymentId: String(payment?.id || ""),
+    transactionAmount: payment.transaction_amount ?? null,
+    transactionAmountNumber: Number.isFinite(paymentAmount) ? paymentAmount : null,
+    externalReference: payment.external_reference || null,
+    metadataPedidoId: payment.metadata?.pedido_id || null,
+    currencyId: payment.currency_id || null,
+    pedidoId: order.id,
+    totalPedido: order.total ?? null,
+    totalPedidoNumber: Number.isFinite(orderTotal) ? orderTotal : null,
+    amountMatches,
+    currencyMatches,
+  });
+
   if (!amountMatches || !currencyMatches) throw new Error("Pagamento não corresponde ao total do pedido.");
 
   const statusMap = {
