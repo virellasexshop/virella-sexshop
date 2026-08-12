@@ -1,0 +1,26 @@
+CORREÇÃO — FRETE NO MERCADO PAGO
+
+Problema identificado:
+- Pedido #15 tinha total R$ 12,10.
+- Mercado Pago cobrou transaction_amount = R$ 0,50.
+- Portanto o frete de R$ 11,60 NÃO entrou no pagamento.
+- O webhook fez certo ao recusar a confirmação, pois o valor pago não correspondia ao pedido.
+
+Correção:
+- O frete passa a ser enviado como um item explícito da preferência do Mercado Pago.
+- shipments.cost foi removido para evitar cobrança duplicada.
+- Antes de criar a preferência, o servidor confere se:
+  soma dos produtos + frete == total do pedido.
+- Se houver divergência, o checkout é bloqueado antes de gerar o pagamento.
+
+Instalação:
+1. Copie a pasta lib para a raiz do projeto, substituindo lib/mercadopago.js.
+2. git add lib/mercadopago.js
+3. git commit -m "Corrige cobranca de frete no Mercado Pago"
+4. git push
+5. Aguarde o deploy da Vercel.
+6. Faça UM NOVO pedido de teste. Não reutilize o pedido #15.
+
+Resultado esperado no próximo teste:
+- Exemplo: produtos R$ 0,50 + frete R$ 11,60 = pagamento Mercado Pago R$ 12,10.
+- O webhook deve aceitar o pagamento e liberar a etiqueta.
