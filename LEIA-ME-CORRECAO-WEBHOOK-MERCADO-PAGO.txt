@@ -1,0 +1,18 @@
+CORREÇÃO DO WEBHOOK DO MERCADO PAGO
+
+O pagamento era aprovado no Mercado Pago, mas o painel permanecia em "Aguardando" porque o webhook retornava HTTP 500.
+
+Esta correção:
+- mantém a validação da assinatura do Mercado Pago;
+- lê data.id tanto da URL quanto do corpo da notificação;
+- remove a dependência da RPC confirmar_pagamento_virella ao aprovar o pedido;
+- atualiza o pedido diretamente no Supabase (compatível com estoque infinito);
+- adiciona logs mais claros na Vercel.
+
+ARQUIVOS:
+app/api/mercadopago/webhook/route.js
+modules/orders/order.service.js
+
+Não precisa executar SQL no Supabase.
+
+Depois do deploy, no Mercado Pago > Webhooks, reenvie a notificação que falhou (se o painel disponibilizar a opção) ou use o simulador/teste. O pedido deve mudar para "Aprovado" e liberar a etiqueta.

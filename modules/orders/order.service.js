@@ -112,13 +112,20 @@ export async function updateOrderFromPayment(payment) {
   const supabase = createSupabaseAdminClient();
 
   if (status === "aprovado") {
-    const { error } = await supabase.rpc("confirmar_pagamento_virella", {
-      p_pedido_id: order.id,
-      p_pagamento_id: String(payment.id),
-      p_pago_em: payment.date_approved || new Date().toISOString(),
-    });
+    // A loja trabalha com estoque infinito. Portanto, a confirmação do pagamento
+    // não precisa chamar uma RPC que baixa estoque. A atualização direta é
+    // idempotente e evita que uma função SQL antiga/quebrada derrube o webhook.
+    const { error } = await supabase
+      .from("pedidos")
+      .update({
+        status_pagamento: "aprovado",
+        mercado_pago_pagamento_id: String(payment.id),
+        pago_em: payment.date_approved || order.pago_em || new Date().toISOString(),
+        atualizado_em: new Date().toISOString(),
+      })
+      .eq("id", order.id);
     if (error) throw error;
-    return { ...order, status_pagamento: status };
+    return { ...order, status_pagamento: "aprovado" };
   }
 
   const { error } = await supabase
@@ -149,48 +156,10 @@ export async function getAdminOrders() {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("pedidos")
-    .select("*,pedido_itens(produto_id,variacao_id,nome,variacao_nome,quantidade,preco_unitario,total,imagem_url)")
+    .select("*,pedido_itens(produto_id,nome,variacao_nome,quantidade,preco_unitario,total,imagem_url)")
     .order("criado_em", { ascending: false });
   if (error) throw error;
-
-  const orders = data || [];
-  const allItems = orders.flatMap((order) => order.pedido_itens || []);
-  const productIds = [...new Set(allItems.map((item) => item.produto_id).filter(Boolean).map(String))];
-  const variationIds = [...new Set(allItems.map((item) => item.variacao_id).filter(Boolean).map(String))];
-
-  const [productsResult, variationsResult] = await Promise.all([
-    productIds.length
-      ? supabase.from("produtos").select("id,nome,imagem_principal,opcao_principal_nome").in("id", productIds)
-      : Promise.resolve({ data: [], error: null }),
-    variationIds.length
-      ? supabase.from("produto_variacoes").select("id,produto_id,nome,imagem_url").in("id", variationIds)
-      : Promise.resolve({ data: [], error: null }),
-  ]);
-
-  if (productsResult.error) throw productsResult.error;
-  if (variationsResult.error) throw variationsResult.error;
-
-  const productMap = new Map((productsResult.data || []).map((product) => [String(product.id), product]));
-  const variationMap = new Map((variationsResult.data || []).map((variation) => [String(variation.id), variation]));
-
-  return orders.map((order) => ({
-    ...order,
-    pedido_itens: (order.pedido_itens || []).map((item) => {
-      const product = productMap.get(String(item.produto_id)) || null;
-      const variation = item.variacao_id ? variationMap.get(String(item.variacao_id)) || null : null;
-      const snapshotVariation = String(item.variacao_nome || "").trim();
-      const nameParts = String(item.nome || "").split(" — ");
-      const parsedVariation = nameParts.length > 1 ? nameParts.slice(1).join(" — ").trim() : "";
-      const variationName = snapshotVariation || variation?.nome || parsedVariation || null;
-
-      return {
-        ...item,
-        nome: item.nome || product?.nome || "Produto",
-        variacao_nome: variationName,
-        imagem_url: item.imagem_url || variation?.imagem_url || product?.imagem_principal || null,
-      };
-    }),
-  }));
+  return data || [];
 }
 
 export async function countOrders() {
